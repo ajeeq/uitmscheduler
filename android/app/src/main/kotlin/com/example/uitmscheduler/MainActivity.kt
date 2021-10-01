@@ -1,4 +1,4 @@
-package com.example.uitmscheduler
+package com.ajeeq.uitmscheduler
 
 import io.flutter.embedding.android.FlutterActivity
 
