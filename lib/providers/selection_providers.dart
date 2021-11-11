@@ -9,7 +9,7 @@ class SelectionListNotifier extends StateNotifier<List<SelectionParameter>> {
   SelectionListNotifier() : super([]);
 
   addSelection(SelectionParameter sp) {
-    state = [...state, sp]; // previous state + new added user object
+    state = [...state, sp];
   }
 
   deleteSelection(SelectionParameter sp) {

@@ -10,14 +10,6 @@ class CourseListNotifier extends StateNotifier<List<String>> {
     state = [];
     state = l;
   }
-
-  // final ProviderRefBase ref;
-
-  // void increment() {
-  //   // Counter can use the "ref" to read other providers
-  //   final repository = ref.read(repositoryProvider);
-  //   repository.post('...');
-  // }
 }
 
 class CourseNameNotifier extends StateNotifier<String> {

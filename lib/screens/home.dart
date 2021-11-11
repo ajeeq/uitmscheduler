@@ -1,7 +1,3 @@
-/// RESOURCES:
-///  1) https://pusher.com/tutorials/flutter-listviews
-/// 
-
 // Import directives
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

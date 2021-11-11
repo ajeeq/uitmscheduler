@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // .env file for loading environment variables
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-// Sandbox - schedulerv0.1
+// Screens
 import 'package:uitmscheduler/screens/home.dart';
 import 'package:uitmscheduler/screens/selection.dart';
 import 'package:uitmscheduler/screens/result.dart';
