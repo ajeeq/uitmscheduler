@@ -32,7 +32,7 @@ class Selection extends ConsumerStatefulWidget {
 
 class _SelectionState extends ConsumerState<Selection> {
   bool isLoading = false;
-  List<String> _campuses = [];
+  List<CampusElement> _campuses = [];
   late TextEditingController controller;
   late String _selectedCampus;
 
@@ -44,15 +44,8 @@ class _SelectionState extends ConsumerState<Selection> {
     Services.getCampuses().then((campuses) {
       final List<CampusElement> jsonStringData = campuses;
 
-      List<String> l = [];
-      for(int i=0; i<jsonStringData.length; i++) {
-        for (var e in jsonStringData) {
-          l.add(e.campus);
-        }
-      }
-
       setState(() {
-        _campuses = l;
+        _campuses = jsonStringData;
         isLoading = false;
       });
     });
@@ -103,7 +96,7 @@ class _SelectionState extends ConsumerState<Selection> {
                           if (textEditingValue.text.isEmpty) {
                             return const Iterable<String>.empty();
                           } else {
-                            return _campuses.where((word) => word
+                            return _campuses.map((e) => e.campus).where((word) => word
                               .toLowerCase()
                               .contains(textEditingValue.text.toLowerCase()));
                           }
@@ -140,16 +133,9 @@ class _SelectionState extends ConsumerState<Selection> {
                     
                           Services.getCourses(selectedString).then((courses) {
                             final List<CourseElement> jsonStringData = courses;
-                    
-                            List<String> l = [];
-                            for(int i=0; i<jsonStringData.length; i++) {
-                              for (var e in jsonStringData) {
-                                l.add(e.course);
-                              }
-                            }
 
                             // updating course list state using Riverpod
-                            courseListController.updateCourseList(l);
+                            courseListController.updateCourseList(jsonStringData);
                           });
                         },
                         fieldViewBuilder: (context, controller, focusNode, onEditingComplete) {

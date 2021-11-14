@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:substring_highlight/substring_highlight.dart';
+import 'package:uitmscheduler/models/course.dart';
 
 // API Services
 import 'package:uitmscheduler/services/services.dart';
@@ -28,7 +29,7 @@ class _CourseAutocompleteState extends ConsumerState<CourseAutocomplete> {
   @override
   Widget build(BuildContext context) {
     // declaring riverpod state providers
-    final List<String> courseListState = ref.watch(courseListProvider);
+    final List<CourseElement> courseListState = ref.watch(courseListProvider);
     final campusNameState = ref.watch(campusNameProvider);
 
       // declaring notifiers for updating riverpod states
@@ -41,7 +42,7 @@ class _CourseAutocompleteState extends ConsumerState<CourseAutocomplete> {
           return const Iterable<String>.empty();
         } else {
           // reading course list state
-          return courseListState.where((word) => word
+          return courseListState.map((e) => e.course).where((word) => word
             .toLowerCase()
             .contains(textEditingValue.text.toLowerCase()));
         }
@@ -79,16 +80,9 @@ class _CourseAutocompleteState extends ConsumerState<CourseAutocomplete> {
     
         Services.getGroup(campusNameState, selectedString).then((groups) {
           final List<GroupArray> jsonStringData = groups;
-    
-          List<String> l = [];
-          for(int i=0; i<jsonStringData.length; i++) {
-            for (var e in jsonStringData) {
-              l.add(e.group);
-            }
-          }
 
           // updating group list state
-          groupListController.updateGroupList(l);
+          groupListController.updateGroupList(jsonStringData);
         });
       },
       fieldViewBuilder: (context, controller, focusNode, onEditingComplete) {
