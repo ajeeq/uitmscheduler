@@ -19,7 +19,11 @@ Official repository of UiTM Scheduler. Built with Flutter, still in development 
 ### Detail Screen (Detail of every course selected)
 ![Screenshot_2021-10-01-10-05-25-76](https://user-images.githubusercontent.com/60167498/135765171-8d8e6391-8c50-4eee-82e6-2f6accac753b.jpg)
 
+# Bugs
+ - Fixed duplicated options in Autocomplete widget [here](https://github.com/ajeeq/uitmscheduler/commit/84797b8b633e54313b1b692898785f93bb04b09e)
+
 # Milestones
  - Able to retrieve more than 1 selected course (List of Objects)✅
  - Persisted state across app❌
  - Timetable❌
+
