@@ -79,7 +79,7 @@ class _CourseAutocompleteState extends ConsumerState<CourseAutocomplete> {
         // NOTE: campus name is campusNameState in provider declared above
     
         Services.getGroup(campusNameState, selectedString).then((groups) {
-          final List<GroupArray> jsonStringData = groups;
+          final List<GroupElement> jsonStringData = groups;
 
           // updating group list state
           groupListController.updateGroupList(jsonStringData);

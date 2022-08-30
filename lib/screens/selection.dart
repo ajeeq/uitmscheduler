@@ -14,13 +14,13 @@ import 'package:uitmscheduler/services/services.dart';
 // Models
 import 'package:uitmscheduler/models/campus.dart';
 import 'package:uitmscheduler/models/course.dart';
-import 'package:uitmscheduler/models/selection_parameter.dart';
+import 'package:uitmscheduler/models/selected.dart';
 
 // Providers
 import 'package:uitmscheduler/providers/campus_providers.dart';
 import 'package:uitmscheduler/providers/course_providers.dart';
 import 'package:uitmscheduler/providers/group_providers.dart';
-import 'package:uitmscheduler/providers/selection_providers.dart';
+import 'package:uitmscheduler/providers/selected_providers.dart';
 
 
 class Selection extends ConsumerStatefulWidget {
@@ -56,12 +56,12 @@ class _SelectionState extends ConsumerState<Selection> {
     // declaring riverpod state providers
     final courseNameState = ref.watch(courseNameProvider);
     final groupNameState = ref.watch(groupNameProvider);
-    final selectionListState = ref.watch(selectionListProvider);
+    final selectedListState = ref.watch(selectedListProvider);
 
     // declaring notifiers for updating riverpod states
     final CampusNameNotifier campusController = ref.read(campusNameProvider.notifier);
     final CourseListNotifier courseListController = ref.read(courseListProvider.notifier);
-    final SelectionListNotifier selectionListController = ref.read(selectionListProvider.notifier);
+    final SelectedListNotifier selectedListController = ref.read(selectedListProvider.notifier);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -222,9 +222,10 @@ class _SelectionState extends ConsumerState<Selection> {
             label: const Text('Done'),
             onPressed: () async {
               // adding user course selection using Riverpod
-              selectionListController.addSelection(SelectionParameter(
+              selectedListController.addSelected(Selected(
                 campusSelected: _selectedCampus,
                 courseSelected: courseNameState.toString(),
+                facultySelected: "",
                 groupSelected: groupNameState.toString()
               ));
   
