@@ -47,8 +47,8 @@ class DetailElement {
     String faculty;
     String course;
     String group;
-    String start;
-    String end;
+    int start;
+    int end;
     String day;
     String mode;
     String status;

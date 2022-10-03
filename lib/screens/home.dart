@@ -29,16 +29,16 @@ class Home extends ConsumerWidget{
         title: const Text("UiTM Scheduler"),
       ),
       body: selectionListState.isEmpty
-        ? Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const <Widget>[
-                Text(
-                  'Empty :(',
-                ),
-              ],
-            ),
-          )
+        ? Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const <Widget>[
+            Center(
+              child: Text(
+                "No data. Please add course(s) by tapping '+' button on the bottom right corner.",
+              ),
+            )
+          ],
+        )
         : Container(
             margin: const EdgeInsets.symmetric(vertical: 20.0),
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
