@@ -18,65 +18,15 @@ class Result extends ConsumerWidget {
     bool clashed = false;
 
     try {
-      for (var i=0; i<detailListState.length; i++) {
-        for (var j=i+1; j<detailListState.length; j++) {
-          if(detailListState[i].day == detailListState[j].day) {
-            if(detailListState[i].end > detailListState[j].start && detailListState[i].start < detailListState[j].end) {
-            	// print(detailListState[i].course + "(" + detailListState[i].start.toString() + "-" + detailListState[i].end.toString() + ")" + " clashed with " + detailListState[j].course + "(" + detailListState[j].start.toString() + "-" + detailListState[j].end.toString() + ")");
-              clashed = true;
-              return Scaffold(
-                appBar: AppBar(
-                  title: const Text("UiTM Scheduler"),
-                ),
-                body: Text("${detailListState[i].course}(${detailListState[i].start}-${detailListState[i].end}) clashed with ${detailListState[j].course}(${detailListState[j].start}-${detailListState[j].end})")
-              );
-            }
-          }
-        }
-      }
-
       return Scaffold(
         appBar: AppBar(
-          title: Text("Timetable"),
+          title: const Text("UiTM Scheduler"),
         ),
         body: TimetableView(
           laneEventsList: _buildLaneEvents(detailListState),
           onEventTap: onEventTapCallBack,
           timetableStyle: const TimetableStyle(),
           onEmptySlotTap: onTimeSlotTappedCallBack,
-        ),
-
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            FloatingActionButton(
-              tooltip: "Add course",
-              heroTag: "add",
-              backgroundColor: Colors.lightBlue,
-              child: const Icon(Icons.add),
-              onPressed: () {},
-            ),
-    
-            SizedBox(height: 16),
-    
-            FloatingActionButton(
-              tooltip: "Fetch Details",
-              heroTag: "fetch",
-              backgroundColor: Colors.lightBlue,
-              child: const Icon(Icons.find_in_page),
-              onPressed: () async {},
-            ),
-
-            SizedBox(height: 16),
-
-            FloatingActionButton(
-              tooltip: "Debug that shown in Snackbar",
-              heroTag: "snack",
-              backgroundColor: Colors.lightBlue,
-              child: const Icon(Icons.miscellaneous_services),
-              onPressed: () async {},
-            ),
-          ],
         ),
       );
     }
