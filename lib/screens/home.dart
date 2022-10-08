@@ -1,6 +1,7 @@
 // Import directives
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // Services
 import 'package:uitmscheduler/services/services.dart';
@@ -23,6 +24,13 @@ class Home extends ConsumerWidget{
     // declaring notifiers for updating riverpod states
     final SelectedListNotifier selectionListController = ref.read(selectedListProvider.notifier);
     final DetailListNotifier detailListController = ref.read(detailListProvider.notifier);
+
+    final Uri url = Uri.parse('https://discord.gg/2uWksRgT');
+    Future<void> discordUrlLauncher() async {
+      if (!await launchUrl(url)) {
+        throw 'Could not launch $url';
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -57,7 +65,28 @@ class Home extends ConsumerWidget{
                     title: Text(selectionListState[i].courseSelected),
                     trailing: const Icon(Icons.delete),
                     onTap: () {
-                      selectionListController.deleteSelected(selectionListState[i]);
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Delete Course'),
+                          content: const Text('Are you sure to delete this course?'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                selectionListController.deleteSelected(selectionListState[i]);
+                                Navigator.pop(context);
+                              }, 
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        )
+                      );
                     },
                   ),
                 ),
@@ -65,6 +94,34 @@ class Home extends ConsumerWidget{
               ],
             ),
           ),
+
+        drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('UiTM Scheduler 0.3.0'),
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.discord,
+              ),
+              title: const Text('Get Help on Discord!'),
+              onTap: () async {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                // Navigator.pop(context);
+                // Navigator.pushNamed(context, '/help');
+                discordUrlLauncher();
+              },
+            ),
+          ]
+        )
+      ),
           
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
