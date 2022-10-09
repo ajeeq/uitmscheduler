@@ -63,6 +63,7 @@ class Home extends ConsumerWidget{
                 for (var i=0; i<selectionListState.length; i++) Card(
                   child: ListTile(
                     title: Text(selectionListState[i].courseSelected),
+                    subtitle: Text(selectionListState[i].groupSelected),
                     trailing: const Icon(Icons.delete),
                     onTap: () {
                       showDialog<String>(
