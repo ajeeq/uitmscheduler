@@ -1,6 +1,15 @@
 # UiTM Scheduler
 
-Official repository of UiTM Scheduler. Built with Flutter, still in development and only has basic core functions.
+Official repository of UiTM Scheduler. Built with Flutter, still in development and only has basic core functions. This app can collect list of course requested by user and provide the details of each course such as campus name, course name, group, start time, end time, day, mode, status, and room/class.
+
+Featuring:
+- Generated vertical TIMETABLE. Yes, you heard it right!
+- Added time CLASH detection algorithm. No more class clashing here and there!
+
+### Tidbits of this app project development:
+About 2 years ago, this project was an idea of creating a mobile app version of UiTM Timetable. Initially, it begins with scraping the data directly from ICRESS website. Now the core functions of app (timetable and clash detection) are successfully been developed. Take note that this app is being build while I am learning how to code mobile application so don't expect too much from me.
+
+For more info and behind the scene development, do join my Discord server [here](https://discord.gg/2uWksRgT).
 
 # Screenshot Samples
 
