@@ -1,6 +1,5 @@
 // Import directives
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,7 +8,7 @@ import 'package:uitmscheduler/screens/widgets/course_autocomplete.dart';
 import 'package:uitmscheduler/screens/widgets/group_autocomplete.dart';
 
 // API Services
-import 'package:uitmscheduler/services/services.dart';
+import 'package:uitmscheduler/api/services.dart';
 
 // Models
 import 'package:uitmscheduler/models/campus.dart';
@@ -45,20 +44,13 @@ class _SelectionState extends ConsumerState<Selection> {
     super.initState();
 
     isLoading = true;
-    Services.getCampuses().then((campuses) {
-      final List<CampusElement> jsonStringData = campuses;
+    Services.getCampusesFaculties().then((campuses) {
+      final List<CampusElement> jsonStringCampusList = campuses.campuses;
+      final List<Faculty> jsonStringFacultyList = campuses.faculties;
 
       setState(() {
-        _campuses = jsonStringData;
-        isLoading = false;
-      });
-    });
-
-    Services.getFaculties().then((faculties) {
-      final List<Faculty> jsonStringData = faculties;
-
-      setState(() {
-        _faculties = jsonStringData;
+        _campuses = jsonStringCampusList;
+        _faculties = jsonStringFacultyList;
         isLoading = false;
       });
     });
@@ -150,7 +142,7 @@ class _SelectionState extends ConsumerState<Selection> {
                             campusController.updateSelectedCampusName(_selectedCampus);
                       
                             Services.getCourses(selectedString, "").then((courses) {
-                              final List<CourseElement> jsonStringData = courses;
+                              final List<CourseElement> jsonStringData = courses.courses;
         
                               // updating course list state using Riverpod
                               courseListController.updateCourseList(jsonStringData);
@@ -248,7 +240,7 @@ class _SelectionState extends ConsumerState<Selection> {
                             facultyController.updateSelectedFacultyName(_selectedFaculty);
                       
                             Services.getCourses(_selectedCampus, selectedString).then((courses) {
-                              final List<CourseElement> jsonStringData = courses;
+                              final List<CourseElement> jsonStringData = courses.courses;
         
                               // updating course list state using Riverpod
                               courseListController.updateCourseList(jsonStringData);

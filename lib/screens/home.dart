@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Services
-import 'package:uitmscheduler/services/services.dart';
+import 'package:uitmscheduler/api/services.dart';
 
 // Models
 import 'package:uitmscheduler/models/detail.dart';
@@ -149,7 +149,7 @@ class Home extends ConsumerWidget{
               final jsonString = selectedToJson(selectionListState);
     
               Services.getDetails(jsonString).then((details) {
-                final List<DetailElement> jsonStringData = details;
+                final List<DetailElement> jsonStringData = details.details;
                 bool clashed = false;
         
                 // updating details list returned from API using Riverpod

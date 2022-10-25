@@ -5,7 +5,7 @@ import 'package:substring_highlight/substring_highlight.dart';
 import 'package:uitmscheduler/models/course.dart';
 
 // API Services
-import 'package:uitmscheduler/services/services.dart';
+import 'package:uitmscheduler/api/services.dart';
 
 // Models
 import 'package:uitmscheduler/models/group.dart';
@@ -80,7 +80,7 @@ class _CourseAutocompleteState extends ConsumerState<CourseAutocomplete> {
         // NOTE: campus name is campusNameState in provider declared above
     
         Services.getGroup(campusNameState, facultyNameState, selectedString).then((groups) {
-          final List<GroupElement> jsonStringData = groups;
+          final List<GroupElement> jsonStringData = groups.groups;
 
           // updating group list state
           groupListController.updateGroupList(jsonStringData);
