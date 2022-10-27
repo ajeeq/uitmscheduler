@@ -1,9 +1,11 @@
 // Import directives
-// ignore_for_file: avoid_unnecessary_containers
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../timetable_view.dart';
+
+// Utils
+import 'package:uitmscheduler/utils/utils_main.dart';
 
 // Provider
 import 'package:uitmscheduler/providers/detail_providers.dart';
@@ -15,7 +17,6 @@ class Result extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // declaring riverpod state providers
     final detailListState = ref.watch(detailListProvider);
-    bool clashed = false;
 
     try {
       return Scaffold(
@@ -51,8 +52,8 @@ class Result extends ConsumerWidget {
             if(detailsList[j].day == dates["mon"]![i]) TableEvent(
               title: detailsList[j].course,
               eventId: k+1,
-              startTime: TableEventTime(hour: detailsList[j].start, minute: 0),
-              endTime: TableEventTime(hour: detailsList[j].end, minute: 0),
+              startTime: TableEventTime(hour: UtilsMain.getHourInt(detailsList[j].start), minute: UtilsMain.getMinuteInt(detailsList[j].start)),
+              endTime: TableEventTime(hour: UtilsMain.getHourInt(detailsList[j].end), minute: UtilsMain.getHourInt(detailsList[j].end)),
               laneIndex: i,
             )
         ],

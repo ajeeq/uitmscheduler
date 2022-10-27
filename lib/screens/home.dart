@@ -6,6 +6,9 @@ import 'package:url_launcher/url_launcher.dart';
 // Services
 import 'package:uitmscheduler/api/services.dart';
 
+// Utils
+import 'package:uitmscheduler/utils/utils_main.dart';
+
 // Models
 import 'package:uitmscheduler/models/detail.dart';
 import 'package:uitmscheduler/models/selected.dart';
@@ -25,7 +28,7 @@ class Home extends ConsumerWidget{
     final SelectedListNotifier selectionListController = ref.read(selectedListProvider.notifier);
     final DetailListNotifier detailListController = ref.read(detailListProvider.notifier);
 
-    final Uri url = Uri.parse('https://discord.gg/2uWksRgT');
+    final Uri url = Uri.parse('https://discord.gg/uTwBPShWdz');
     Future<void> discordUrlLauncher() async {
       if (!await launchUrl(url)) {
         throw 'Could not launch $url';
@@ -104,7 +107,7 @@ class Home extends ConsumerWidget{
               decoration: BoxDecoration(
                 color: Colors.blue,
               ),
-              child: Text('UiTM Scheduler 0.3.0'),
+              child: Text('UiTM Scheduler 0.4.0'),
             ),
             ListTile(
               leading: const Icon(
@@ -158,7 +161,24 @@ class Home extends ConsumerWidget{
                 for (var i=0; i<jsonStringData.length; i++) {
                   for (var j=i+1; j<jsonStringData.length; j++) {
                     if(jsonStringData[i].day == jsonStringData[j].day) {
-                      if(jsonStringData[i].end > jsonStringData[j].start && jsonStringData[i].start < jsonStringData[j].end) {
+                     String startHourFormer = (jsonStringData[i].start).split(":")[0];
+                      String startMinuteFormer = (jsonStringData[i].start).split(":")[1];
+
+                      String endHourFormer = (jsonStringData[i].end).split(":")[0];
+                      String endMinuteFormer = (jsonStringData[i].end).split(":")[1];
+
+                      String startHourLatter = (jsonStringData[j].start).split(":")[0];
+                      String startMinuteLatter = (jsonStringData[j].start).split(":")[1];
+
+                      String endHourLatter = (jsonStringData[j].end).split(":")[0];
+                      String endMinuteLatter = (jsonStringData[j].end).split(":")[1];
+
+                      var summedMinutesStartFormer = UtilsMain.hourToMinute(startHourFormer, startMinuteFormer);
+                      var summedMinutesEndFormer = UtilsMain.hourToMinute(endHourFormer, endMinuteFormer);
+                      var summedMinutesStartLatter = UtilsMain.hourToMinute(startHourLatter, startMinuteLatter);
+                      var summedMinutesEndLatter = UtilsMain.hourToMinute(endHourLatter, endMinuteLatter);
+
+                      if(summedMinutesEndFormer > summedMinutesStartLatter && summedMinutesStartFormer < summedMinutesEndLatter) {
                         clashed = true;
                         return showDialog<void>(
                           context: context,
@@ -170,7 +190,7 @@ class Home extends ConsumerWidget{
                                 child: ListBody(
                                   children: <Widget>[
                                     Text("${jsonStringData[i].course}-${jsonStringData[i].group} (${jsonStringData[i].start}-${jsonStringData[i].end})"),
-                                    Text("is clashed with"),
+                                    const Text("is clashed with"),
                                     Text("${jsonStringData[j].course}-${jsonStringData[j].group} (${jsonStringData[j].start}-${jsonStringData[j].end})"),
                                   ],
                                 ),

@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 
 // List of Models
-import 'package:uitmscheduler/models/campus.dart';
+import 'package:uitmscheduler/models/campus_faculty.dart';
 import 'package:uitmscheduler/models/course.dart';
 import 'package:uitmscheduler/models/detail.dart';
 import 'package:uitmscheduler/models/group.dart';
@@ -14,7 +14,7 @@ class Services {
   static Future<Campus> getCampusesFaculties() async {
     Campus data;
     List<CampusElement> campuses = [];
-    List<Faculty> faculties = [];
+    List<FacultyElement> faculties = [];
 
     var baseUrl = 'https://icress.uitm.edu.my/timetable/search.asp';
     var headers = {
@@ -41,7 +41,7 @@ class Services {
           for (var i=0; i<optionFaculty.length; i++) {
             final id = i;
             final faculty = optionFaculty[i].text.trim();
-            var facultyObj = Faculty(id: id, faculty: faculty);
+            var facultyObj = FacultyElement(id: id, faculty: faculty);
             faculties.add(facultyObj);
           }
 
@@ -268,7 +268,7 @@ class Services {
         }
 
 
-        final response = await http.get(Uri.parse(newUrl!), headers: headers);
+        final response = await http.get(Uri.parse(newUrl), headers: headers);
         try {
           if (response.statusCode == 200) {
             statusCode = response.statusCode;
@@ -290,17 +290,31 @@ class Services {
                 
                 if (group == groupSelectedArray[i]) {
                   group = groupSelectedArray[i];
+
+                  // day: getting day in DAY TIME column
+                  // MONDAY
+
+                  // bothTime: getting start and end time in DAY TIME column 
+                  // 14:00 PM-15:00 PM )
+
+                  // time: cleaned start and end time
+                  // 14:00 PM-15:00 PM
+
+                  // meridiemStart/meridiemEnd: getting start time including trailing meridiem
+                  // 08:00 AM
+
+                  // start/end: removing leading zero
+                  // 8:00 AM
+
                   final day = daytime.split("(")[0];
                   final bothTime = daytime.split("(")[1];
                   final time = bothTime.substring(1, bothTime.indexOf(')')).trim();
                   
                   var meridiemStart = time.split("-")[0];
-                  var trailedStart = meridiemStart.replaceAll(RegExp('/^(?:00:)?0?/'), '');
-                  var start = int.parse(trailedStart.split(":")[0]);
+                  var start = meridiemStart.replaceAll(RegExp('/^(?:00:)?0?/'), '');
 
                   var meridiemEnd = time.split("-")[1];
-                  var trailedEnd = meridiemEnd.replaceAll(RegExp('/^(?:00:)?0?/'), '');
-                  var end = int.parse(trailedEnd.split(":")[0]);
+                  var end = meridiemEnd.replaceAll(RegExp('/^(?:00:)?0?/'), '');
 
                   final detailObj = DetailElement(
                     campus: campus, 

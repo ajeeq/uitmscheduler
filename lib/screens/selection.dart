@@ -11,7 +11,7 @@ import 'package:uitmscheduler/screens/widgets/group_autocomplete.dart';
 import 'package:uitmscheduler/api/services.dart';
 
 // Models
-import 'package:uitmscheduler/models/campus.dart';
+import 'package:uitmscheduler/models/campus_faculty.dart';
 import 'package:uitmscheduler/models/course.dart';
 import 'package:uitmscheduler/models/selected.dart';
 
@@ -34,7 +34,7 @@ class _SelectionState extends ConsumerState<Selection> {
   late TextEditingController controller;
 
   List<CampusElement> _campuses = [];
-  List<Faculty> _faculties = [];
+  List<FacultyElement> _faculties = [];
 
   late String _selectedCampus;
   late String _selectedFaculty;
@@ -46,7 +46,7 @@ class _SelectionState extends ConsumerState<Selection> {
     isLoading = true;
     Services.getCampusesFaculties().then((campuses) {
       final List<CampusElement> jsonStringCampusList = campuses.campuses;
-      final List<Faculty> jsonStringFacultyList = campuses.faculties;
+      final List<FacultyElement> jsonStringFacultyList = campuses.faculties;
 
       setState(() {
         _campuses = jsonStringCampusList;
