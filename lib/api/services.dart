@@ -9,19 +9,20 @@ import 'package:uitmscheduler/models/detail.dart';
 import 'package:uitmscheduler/models/group.dart';
 import 'package:uitmscheduler/models/selected.dart';
 
+const baseUrl = 'https://icress.uitm.edu.my/timetable/search.asp';
+const baseListUrl = 'https://icress.uitm.edu.my/timetable/list/';
+var headers = {
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+  'content-type': 'application/x-www-form-urlencoded',
+};
+
 class Services {
   // Fetching campus list
   static Future<Campus> getCampusesFaculties() async {
     Campus data;
     List<CampusElement> campuses = [];
     List<FacultyElement> faculties = [];
-
-    var baseUrl = 'https://icress.uitm.edu.my/timetable/search.asp';
-    var headers = {
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-      'content-type': 'application/x-www-form-urlencoded',
-    };
 
     final response = await http.get(Uri.parse(baseUrl), headers: headers);
     try {
@@ -76,12 +77,6 @@ class Services {
     Course data;
     List<CourseElement> courses = [];
 
-    var baseUrl = 'https://icress.uitm.edu.my/timetable/search.asp';
-    var headers = {
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-      'content-type': 'application/x-www-form-urlencoded',
-    };
     var body = {
       'yNTU2NDgiiLCJzY29wZSI6Ii9llbGFzdG': campusCode,
       'eyJ0eXAiOiiJKV1QiLCJhbGciOiJIUzI1NiJ9': facultyCode 
@@ -134,6 +129,31 @@ class Services {
         }
       
       }
+      else if (response.statusCode == 200) {
+        var document = parser.parse(response.body);
+        try {
+          var tableCourse = document.querySelectorAll("#example2 > tbody")[0];
+          var trs = tableCourse.querySelectorAll("tr");
+          
+          for (var i=0; i<trs.length; i++) {
+            final num = trs[i].children[0].text.toString().trim();
+            final course = trs[i].children[1].text.toString().trim();
+            var courseObj = CourseElement(num: num, course: course);
+            courses.add(courseObj);
+          }
+
+          data = Course(
+            statusCode: response.statusCode,
+            courses: courses
+          );
+
+          final courseList = courseToJson(data);
+          return courseFromJson(courseList);
+        }
+        catch (e) {
+          rethrow;
+        }
+      }
       else {
         const courseList = null;
         return courseList;
@@ -155,22 +175,15 @@ class Services {
     String validity;
     Group data;
     List<GroupElement> groups = [];
-
-    const baseUrl = "https://icress.uitm.edu.my/timetable1/list/";
     String groupListUri;
-    var headers = {
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-      'content-type': 'application/x-www-form-urlencoded',
-    };
     
     if (campusCode == "B") {
       // ignore: prefer_interpolation_to_compose_strings
-      groupListUri = baseUrl + "B/" + facultyCode + "/" + courseCode + ".html";
+      groupListUri = baseListUrl + "B/" + facultyCode + "/" + courseCode + ".html";
     }
     else {
       // ignore: prefer_interpolation_to_compose_strings
-      groupListUri = baseUrl + campusCode + "/" + courseCode + ".html";
+      groupListUri = baseListUrl + campusCode + "/" + courseCode + ".html";
     }
 
     final response = await http.get(Uri.parse(groupListUri), headers: headers);
@@ -239,14 +252,7 @@ class Services {
     int statusCode = 0;
     Detail data;
     List<DetailElement> details = [];
-
-    const url = "https://icress.uitm.edu.my/timetable1/list/";
     String newUrl;
-    var headers = {
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-      'content-type': 'application/x-www-form-urlencoded',
-    };
 
     for (var i=0; i<input.length; i++) {
       var counter = input[i];
@@ -260,11 +266,11 @@ class Services {
       for (var i=0; i<input.length; i++) {
         if (campusCodeArray[i] == "B") {
           // ignore: prefer_interpolation_to_compose_strings
-          newUrl = url + "B/" + facultySelectedArray[i] + "/" + courseSelectedArray[i] + ".html";
+          newUrl = baseListUrl + "B/" + facultySelectedArray[i] + "/" + courseSelectedArray[i] + ".html";
         }
         else {
           // ignore: prefer_interpolation_to_compose_strings
-          newUrl = url + campusCodeArray[i] + "/" + courseSelectedArray[i] + ".html";
+          newUrl = baseListUrl + campusCodeArray[i] + "/" + courseSelectedArray[i] + ".html";
         }
 
 
@@ -331,14 +337,6 @@ class Services {
                   details.add(detailObj);
                 }
               }
-
-              data = Detail(
-                statusCode: response.statusCode, 
-                details: details
-              );
-
-              final detailsList = detailToJson(data);
-              return detailFromJson(detailsList);
             }
             catch (e) {
               rethrow;

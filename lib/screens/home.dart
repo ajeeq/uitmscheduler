@@ -161,17 +161,17 @@ class Home extends ConsumerWidget{
                 for (var i=0; i<jsonStringData.length; i++) {
                   for (var j=i+1; j<jsonStringData.length; j++) {
                     if(jsonStringData[i].day == jsonStringData[j].day) {
-                     String startHourFormer = (jsonStringData[i].start).split(":")[0];
-                      String startMinuteFormer = (jsonStringData[i].start).split(":")[1];
+                      String startHourFormer = (jsonStringData[i].start).split(":")[0];
+                      String startMinuteFormer = (jsonStringData[i].start).split(":")[1].split(" ")[0];
 
                       String endHourFormer = (jsonStringData[i].end).split(":")[0];
-                      String endMinuteFormer = (jsonStringData[i].end).split(":")[1];
+                      String endMinuteFormer = (jsonStringData[i].end).split(":")[1].split(" ")[0];
 
                       String startHourLatter = (jsonStringData[j].start).split(":")[0];
-                      String startMinuteLatter = (jsonStringData[j].start).split(":")[1];
+                      String startMinuteLatter = (jsonStringData[j].start).split(":")[1].split(" ")[0];
 
                       String endHourLatter = (jsonStringData[j].end).split(":")[0];
-                      String endMinuteLatter = (jsonStringData[j].end).split(":")[1];
+                      String endMinuteLatter = (jsonStringData[j].end).split(":")[1].split(" ")[0];
 
                       var summedMinutesStartFormer = UtilsMain.hourToMinute(startHourFormer, startMinuteFormer);
                       var summedMinutesEndFormer = UtilsMain.hourToMinute(endHourFormer, endMinuteFormer);
