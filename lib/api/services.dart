@@ -30,7 +30,7 @@ class Services {
         var document = parser.parse(response.body);
 
         try {
-          var optionCampus = document.querySelectorAll("select#search_campus > option");
+          var optionCampus = document.querySelectorAll("select#yNTU2NDgiiLCJzY29wZSI6Iii9llbGFzdG > option");
           for (var i=0; i<optionCampus.length; i++) {
             final id = i;
             final campus = optionCampus[i].text.trim();
@@ -38,7 +38,7 @@ class Services {
             campuses.add(campusObj);
           }
 
-          var optionFaculty = document.querySelectorAll("select#search_faculty > option");
+          var optionFaculty = document.querySelectorAll("select#eyJ0eXAiOiiiJKV1QiLCJhbGciOiJIUzI1NiJ9 > option");
           for (var i=0; i<optionFaculty.length; i++) {
             final id = i;
             final faculty = optionFaculty[i].text.trim();
@@ -60,8 +60,7 @@ class Services {
         }
       }
       else {
-        const campusList = null;
-        return campusList;
+        throw 'No data available from the iCRESS at the moment😐';
       }
     } catch (e) {
       rethrow;

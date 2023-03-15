@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../styles/background_painter.dart';
-import '../views/event_view.dart';
-import '../timetable_view.dart';
+import 'package:uitmscheduler/packages/timetable_view/src/styles/background_painter.dart';
+import 'package:uitmscheduler/packages/timetable_view/src/views/event_view.dart';
+import 'package:uitmscheduler/packages/timetable_view/timetable_view.dart';
 
 class LaneView extends StatelessWidget {
   final List<TableEvent> events;

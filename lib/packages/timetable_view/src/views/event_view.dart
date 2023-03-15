@@ -1,9 +1,9 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import '../models/table_event.dart';
-import '../styles/timetable_style.dart';
-import '../utils/utils_timetable.dart';
+import 'package:uitmscheduler/packages/timetable_view/src/models/table_event.dart';
+import 'package:uitmscheduler/packages/timetable_view/src/styles/timetable_style.dart';
+import 'package:uitmscheduler/packages/timetable_view/src/utils/utils.dart';
 
 class EventView extends StatelessWidget {
   final TableEvent event;

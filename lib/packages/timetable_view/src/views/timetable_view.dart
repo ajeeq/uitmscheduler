@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../utils/utils_timetable.dart';
-import '../views/controller/timetable_view_controller.dart';
-import '../views/diagonal_scroll_view.dart';
-import '../views/lane_view.dart';
-import '../timetable_view.dart';
+import 'package:uitmscheduler/packages/timetable_view/src/utils/utils.dart';
+import 'package:uitmscheduler/packages/timetable_view/src/views/controller/timetable_view_controller.dart';
+import 'package:uitmscheduler/packages/timetable_view/src/views/diagonal_scroll_view.dart';
+import 'package:uitmscheduler/packages/timetable_view/src/views/lane_view.dart';
+import 'package:uitmscheduler/packages/timetable_view/timetable_view.dart';
 
 class TimetableView extends StatefulWidget {
   final List<LaneEvents> laneEventsList;

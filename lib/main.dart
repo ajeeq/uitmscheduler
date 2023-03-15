@@ -3,21 +3,27 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-// .env file for loading environment variables
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+// Models
+import 'package:uitmscheduler/models/selected.dart';
 
 // Screens
 import 'package:uitmscheduler/screens/home.dart';
-import 'package:uitmscheduler/screens/selection.dart';
+import 'package:uitmscheduler/screens/campus_selection.dart';
+import 'package:uitmscheduler/screens/faculty_selection.dart';
+import 'package:uitmscheduler/screens/course_selection.dart';
+import 'package:uitmscheduler/screens/group_selection.dart';
 import 'package:uitmscheduler/screens/result.dart';
 
 Future main() async {
-  // Loading env file for accessing secured environment variables
-  await dotenv.load(fileName: "local.env");
+  await Hive.initFlutter();
+  Hive.registerAdapter<Selected>(SelectedAdapter());
+  await Hive.openBox<Selected>("selectedCourse");
   
   runApp(
-    ProviderScope(
+    const ProviderScope(
       child: MyApp(),
     )
   );
@@ -32,7 +38,10 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => Home(),
-        '/selection': (context) => Selection(),
+        '/campus_selection': (context) => CampusSelection(),
+        '/faculty_selection': (context) => FacultySelection(),
+        '/course_selection': (context) => CourseSelection(),
+        '/group_selection': (context) => GroupSelection(),
         '/result': (context) => Result(),
       },
     );

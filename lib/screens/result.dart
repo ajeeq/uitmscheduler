@@ -1,14 +1,32 @@
 // Import directives
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../timetable_view.dart';
+// Import packages
+import '../../packages/timetable_view/timetable_view.dart';
 
 // Utils
 import 'package:uitmscheduler/utils/utils_main.dart';
 
 // Provider
 import 'package:uitmscheduler/providers/detail_providers.dart';
+
+var pixelRatio = window.devicePixelRatio;
+
+//Size in logical pixels
+var logicalScreenSize = window.physicalSize / pixelRatio;
+var logicalWidth = logicalScreenSize.width;
+
+//Padding in physical pixels
+var padding = window.padding;
+
+//Safe area paddings in logical pixels
+var paddingLeft = window.padding.left / window.devicePixelRatio;
+var paddingRight = window.padding.right / window.devicePixelRatio;
+
+//Safe area in logical pixels
+var safeWidth = logicalWidth - paddingLeft - paddingRight;
 
 class Result extends ConsumerWidget {
   const Result({Key? key}) : super(key: key);
@@ -26,7 +44,9 @@ class Result extends ConsumerWidget {
         body: TimetableView(
           laneEventsList: _buildLaneEvents(detailListState),
           onEventTap: onEventTapCallBack,
-          timetableStyle: const TimetableStyle(),
+          timetableStyle: TimetableStyle(
+            laneWidth: (safeWidth - 70) / 5
+          ),
           onEmptySlotTap: onTimeSlotTappedCallBack,
         ),
       );
@@ -37,16 +57,24 @@ class Result extends ConsumerWidget {
   }
 
   List<LaneEvents> _buildLaneEvents(detailsList) {
+    var startDay = "";
     final dates = {
       "mon": <String>['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'],
       "sun": <String>['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY'],
+    };
+    final datesCol = {
+      "mon": <String>['MON', 'TUE', 'WED', 'THU', 'FRI'],
+      "sun": <String>['SUN', 'MON', 'TUE', 'WED', 'THU'],
     };
 
     int k = 10;
 
     return [
       for (var i=0; i<dates["mon"]!.length; i++) LaneEvents(
-        lane: Lane(name: dates["mon"]![i], laneIndex: i),
+        lane: Lane(
+          name: datesCol["mon"]![i],
+          laneIndex: i,
+        ),
         events: [
           for (var j=0; j<detailsList.length; j++)
             if(detailsList[j].day == dates["mon"]![i]) TableEvent(
