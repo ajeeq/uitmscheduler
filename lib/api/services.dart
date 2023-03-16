@@ -30,7 +30,7 @@ class Services {
         var document = parser.parse(response.body);
 
         try {
-          var optionCampus = document.querySelectorAll("select#yNTU2NDgiiLCJzY29wZSI6Iii9llbGFzdG > option");
+          var optionCampus = document.querySelectorAll("select#search_cam > option");
           for (var i=0; i<optionCampus.length; i++) {
             final id = i;
             final campus = optionCampus[i].text.trim();
@@ -77,7 +77,7 @@ class Services {
     List<CourseElement> courses = [];
 
     var body = {
-      'yNTU2NDgiiLCJzY29wZSI6Ii9llbGFzdG': campusCode,
+      'search_cam': campusCode,
       'eyJ0eXAiOiiJKV1QiLCJhbGciOiJIUzI1NiJ9': facultyCode 
     };
 
