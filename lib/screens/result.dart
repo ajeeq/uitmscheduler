@@ -57,27 +57,21 @@ class Result extends ConsumerWidget {
   }
 
   List<LaneEvents> _buildLaneEvents(detailsList) {
-    var startDay = "";
-    final dates = {
-      "mon": <String>['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'],
-      "sun": <String>['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY'],
-    };
-    final datesCol = {
-      "mon": <String>['MON', 'TUE', 'WED', 'THU', 'FRI'],
-      "sun": <String>['SUN', 'MON', 'TUE', 'WED', 'THU'],
-    };
+    var setStartDay = UtilsMain.setStartDay(detailsList);
+    final dayColumn = setStartDay.elementAt(0);
+    final dayToCompare = setStartDay.elementAt(1);
 
     int k = 10;
 
     return [
-      for (var i=0; i<dates["mon"]!.length; i++) LaneEvents(
+      for (var i=0; i<dayToCompare.length; i++) LaneEvents(
         lane: Lane(
-          name: datesCol["mon"]![i],
+          name: dayColumn[i],
           laneIndex: i,
         ),
         events: [
           for (var j=0; j<detailsList.length; j++)
-            if(detailsList[j].day == dates["mon"]![i]) TableEvent(
+            if(detailsList[j].day == dayToCompare[i]) TableEvent(
               title: detailsList[j].course,
               eventId: k+1,
               startTime: TableEventTime(hour: UtilsMain.getHourInt(detailsList[j].start), minute: UtilsMain.getMinuteInt(detailsList[j].start)),

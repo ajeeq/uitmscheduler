@@ -58,4 +58,24 @@ class UtilsMain {
     }
     
   }
+  static Set setStartDay(detailsList) {
+    // Refer lib/darts/set_timetable_column.dart
+    List dayColumn = [];
+    List dayToCompare = [];
+
+    for (var i=0; i<detailsList.length; i++) {
+
+      var trimmed = detailsList[i].campus.substring(0,1);
+
+      if(trimmed == "D" || trimmed == "K" || trimmed == "J" || trimmed == "T") {
+        dayColumn = ['SUN', 'MON', 'TUE', 'WED', 'THU'];
+        dayToCompare = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY'];
+      } else {
+        dayColumn = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
+        dayToCompare = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
+      }
+    }
+
+    return {dayColumn, dayToCompare};
+  }
 }
