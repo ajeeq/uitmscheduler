@@ -10,12 +10,12 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:uitmscheduler/models/selected.dart';
 
 // Screens
-import 'package:uitmscheduler/screens/home.dart';
-import 'package:uitmscheduler/screens/campus_selection.dart';
-import 'package:uitmscheduler/screens/faculty_selection.dart';
-import 'package:uitmscheduler/screens/course_selection.dart';
-import 'package:uitmscheduler/screens/group_selection.dart';
-import 'package:uitmscheduler/screens/result.dart';
+import 'package:uitmscheduler/views/home.dart';
+import 'package:uitmscheduler/views/campus_selection.dart';
+import 'package:uitmscheduler/views/faculty_selection.dart';
+import 'package:uitmscheduler/views/course_selection.dart';
+import 'package:uitmscheduler/views/group_selection.dart';
+import 'package:uitmscheduler/views/result.dart';
 
 Future main() async {
   await Hive.initFlutter();

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Widgets
-import 'package:uitmscheduler/screens/widgets/group_input_field.dart';
+import 'package:uitmscheduler/views/widgets/group_input_field.dart';
 
 // Models
 import 'package:uitmscheduler/models/selected.dart';

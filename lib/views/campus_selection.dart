@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Widgets
-import 'package:uitmscheduler/screens/widgets/campus_input_field.dart';
+import 'package:uitmscheduler/views/widgets/campus_input_field.dart';
 
 class CampusSelection extends ConsumerStatefulWidget {
   const CampusSelection({Key? key}) : super(key: key);
