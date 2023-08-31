@@ -130,7 +130,7 @@ class Home extends ConsumerWidget{
               decoration: BoxDecoration(
                 color: Colors.blue,
               ),
-              child: Text('UiTM Scheduler 0.5.2'),
+              child: Text('UiTM Scheduler 0.5.3'),
             ),
             ListTile(
               leading: const Icon(
