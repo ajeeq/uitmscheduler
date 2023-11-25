@@ -42,13 +42,14 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
 
     Services.getCampusesFaculties().then((campuses) {
       final List<CampusElement> jsonStringCampusList = campuses.campuses;
-    
+      
       setState(() {
         _campuses = jsonStringCampusList;
         _isLoading = false;
       });
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text("Data loaded from iCRESS successfully!"),
           duration: Duration(seconds: 5),
         ),
@@ -60,7 +61,7 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(_errorMessage),
-            duration: Duration(seconds: 5),
+            duration: const Duration(seconds: 5),
           ),
         );
     });
@@ -155,7 +156,7 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
                         },
                         noItemsFoundBuilder: (context) => Container(
                           height: 70,
-                          child: Center(
+                          child: const Center(
                             child: Text(
                               'No campus found.',
                               style: TextStyle(fontSize: 20),

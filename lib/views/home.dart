@@ -12,18 +12,34 @@ import 'package:uitmscheduler/api/services.dart';
 import 'package:uitmscheduler/utils/utils_main.dart';
 import 'package:uitmscheduler/utils/hive_selected_course.dart';
 
+// Constants
+import 'package:uitmscheduler/constants/colors.dart';
+
 // Models
 import 'package:uitmscheduler/models/detail.dart';
 import 'package:uitmscheduler/models/selected.dart';
+import 'package:uitmscheduler/models/campus_faculty.dart';
 
 // Providers
 import 'package:uitmscheduler/providers/selected_providers.dart';
 import 'package:uitmscheduler/providers/detail_providers.dart';
 
-class Home extends ConsumerWidget{
+class Home extends ConsumerStatefulWidget {
   const Home({Key? key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {// declaring notifiers for updating riverpod states
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends ConsumerState<Home>{
+  // const Home({Key? key}) : super(key: key);
+
+  String _errorMessage = '';
+  bool data = false;
+
+  @override
+  Widget build(BuildContext context) {
+    // declaring notifiers for updating riverpod states
     final SelectedListNotifier selectionListController = ref.read(selectedListProvider.notifier);
     final DetailListNotifier detailListController = ref.read(detailListProvider.notifier);
 
@@ -39,6 +55,7 @@ class Home extends ConsumerWidget{
     return Scaffold(
       appBar: AppBar(
         title: const Text("UiTM Scheduler"),
+        backgroundColor: const Color(0xFF242d5b),
       ),
       body: ValueListenableBuilder(
           valueListenable: HiveSelectedCourse.box.listenable(),
@@ -46,13 +63,14 @@ class Home extends ConsumerWidget{
             return SafeArea(
               child: box.isEmpty 
               ? Container(
-                color: Colors.grey[85],
+                color: AppColor.lightWhitePrimary,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const <Widget>[
                     Center(
                       child: Text(
-                        "No data. Please add course(s) by tapping '+' button on the bottom right corner.",
+                        "No data.",
+                        textAlign: TextAlign.center
                       ),
                     )
                   ],
@@ -116,10 +134,7 @@ class Home extends ConsumerWidget{
                   ),
               )
             );
-            
           }
-         
-          
         ),
 
         drawer: Drawer(
@@ -128,7 +143,7 @@ class Home extends ConsumerWidget{
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: AppColor.lightPurplePrimary,
               ),
               child: Text('UiTM Scheduler 0.5.2'),
             ),
@@ -149,77 +164,103 @@ class Home extends ConsumerWidget{
           ]
         )
       ),
-          
+      
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           FloatingActionButton(
             tooltip: "Add course",
             heroTag: "add",
-            backgroundColor: Colors.lightBlue,
+            backgroundColor: AppColor.lightPurplePrimary,
             child: const Icon(Icons.add),
             onPressed: () {
-              Navigator.pushNamed(context, '/campus_selection');
-            },
-          ),
-  
-          const SizedBox(height: 16),
-  
-          FloatingActionButton(
-            tooltip: "Fetch Details",
-            heroTag: "fetch",
-            backgroundColor: Colors.lightBlue,
-            child: const Icon(Icons.find_in_page),
-            onPressed: () async {
-              List<Selected> selectedList = selectedCourseStore.getAllSelected();
-              final String jsonString = selectedToJson(selectedList);
-    
-              Services.getDetails(jsonString).then((details) {
-                final List<DetailElement> jsonStringData = details.details;
-                bool clashed = false;
-        
-                // updating details list returned from API using Riverpod
-                detailListController.updateDetailList(jsonStringData);
-
-                var isClashSet = UtilsMain.isClash(jsonStringData);
-                clashed = isClashSet.elementAt(0);
-                
-                if(clashed == true) {
-                  DetailElement clashOne = isClashSet.elementAt(1);
-                  DetailElement clashTwo = isClashSet.elementAt(2);
-
-                  return showDialog<void>(
-                    context: context,
-                    barrierDismissible: false, // user must tap button!
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Time clash occured!'),
-                        content: SingleChildScrollView(
-                          child: ListBody(
-                            children: <Widget>[
-                              Text("${clashOne.course}-${clashOne.group} (${clashOne.start}-${clashOne.end})"),
-                              const Text("is clashed with"),
-                              Text("${clashTwo.course}-${clashTwo.group} (${clashTwo.start}-${clashTwo.end})"),
-                            ],
-                          ),
-                        ),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text('Okay'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      );
-                    },
+              Services.getCampusesFaculties().then((campuses) {
+                if(campuses.campuses.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("No data available from the iCRESS at the moment😐"),
+                      duration: Duration(seconds: 5),
+                    ),
                   );
+                } else {
+                  Navigator.pushNamed(context, '/campus_selection');
                 }
-
-                Navigator.pushNamed(context, "/result");
+              }).catchError((e) {
+                  setState(() {
+                    _errorMessage = e.toString();
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(_errorMessage),
+                      duration: const Duration(seconds: 5),
+                    ),
+                  );
               });
             },
           ),
+
+          data 
+            ? const SizedBox(height: 16)
+            : const SizedBox.shrink(),
+
+          data 
+            ? FloatingActionButton(
+                tooltip: "Fetch Details",
+                heroTag: "fetch",
+                backgroundColor: AppColor.lightPurplePrimary,
+                child: const Icon(Icons.find_in_page),
+                onPressed: () async {
+                  List<Selected> selectedList = selectedCourseStore.getAllSelected();
+                  final String jsonString = selectedToJson(selectedList);
+        
+                  Services.getDetails(jsonString).then((details) {
+                    final List<DetailElement> jsonStringData = details.details;
+                    bool clashed = false;
+            
+                    // updating details list returned from API using Riverpod
+                    detailListController.updateDetailList(jsonStringData);
+
+                    var isClashSet = UtilsMain.isClash(jsonStringData);
+                    clashed = isClashSet.elementAt(0);
+                    
+                    if(clashed == true) {
+                      DetailElement clashOne = isClashSet.elementAt(1);
+                      DetailElement clashTwo = isClashSet.elementAt(2);
+
+                      return showDialog<void>(
+                        context: context,
+                        barrierDismissible: false, // user must tap button!
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Time clash occured!'),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: <Widget>[
+                                  Text("${clashOne.course}-${clashOne.group} (${clashOne.start}-${clashOne.end})"),
+                                  const Text("is clashed with"),
+                                  Text("${clashTwo.course}-${clashTwo.group} (${clashTwo.start}-${clashTwo.end})"),
+                                ],
+                              ),
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text('Okay'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+
+                    Navigator.pushNamed(context, "/result");
+                  });
+                }
+              )
+              : const SizedBox.shrink()
+          
           
         ],
       ),

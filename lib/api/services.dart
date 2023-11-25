@@ -60,7 +60,7 @@ class Services {
         }
       }
       else {
-        throw 'No data available from the iCRESS at the moment😐';
+        throw 'Error connecting to iCRESS😐';
       }
     } catch (e) {
       rethrow;
