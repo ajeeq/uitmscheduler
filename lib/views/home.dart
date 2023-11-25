@@ -55,7 +55,7 @@ class _HomeState extends ConsumerState<Home>{
     return Scaffold(
       appBar: AppBar(
         title: const Text("UiTM Scheduler"),
-        backgroundColor: const Color(0xFF242d5b),
+        backgroundColor: AppColor.lightPrimary,
       ),
       body: ValueListenableBuilder(
           valueListenable: HiveSelectedCourse.box.listenable(),
@@ -63,7 +63,7 @@ class _HomeState extends ConsumerState<Home>{
             return SafeArea(
               child: box.isEmpty 
               ? Container(
-                color: AppColor.lightWhitePrimary,
+                color: AppColor.lightBackground,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const <Widget>[
@@ -143,7 +143,7 @@ class _HomeState extends ConsumerState<Home>{
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: AppColor.lightPurplePrimary,
+                color: AppColor.lightPrimary,
               ),
               child: Text('UiTM Scheduler 0.5.2'),
             ),
@@ -171,7 +171,7 @@ class _HomeState extends ConsumerState<Home>{
           FloatingActionButton(
             tooltip: "Add course",
             heroTag: "add",
-            backgroundColor: AppColor.lightPurplePrimary,
+            backgroundColor: AppColor.lightPrimary,
             child: const Icon(Icons.add),
             onPressed: () {
               Services.getCampusesFaculties().then((campuses) {
@@ -207,7 +207,7 @@ class _HomeState extends ConsumerState<Home>{
             ? FloatingActionButton(
                 tooltip: "Fetch Details",
                 heroTag: "fetch",
-                backgroundColor: AppColor.lightPurplePrimary,
+                backgroundColor: AppColor.lightPrimary,
                 child: const Icon(Icons.find_in_page),
                 onPressed: () async {
                   List<Selected> selectedList = selectedCourseStore.getAllSelected();

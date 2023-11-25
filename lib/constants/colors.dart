@@ -47,11 +47,11 @@ class AppColor {
   AppColor._();
 
   // light theme
-  static const Color lightWhitePrimary = Color(0xFFeceeff);
-  static const Color lightPurplePrimary = Color(0xFF242d5b);
+  static const Color lightBackground = Color(0xFFeceeff);
+  static const Color lightPrimary = Color(0xFF242d5b);
 
   // dark theme
-  static const Color darkWhitePrimary = Color(0xFFeceeff);
+  static const Color darkBackgroundPrimary = Color(0xFFeceeff);
 
   // static const Gradient linearGradient = LinearGradient(
   //   begin: Alignment(0.0, 0.0),

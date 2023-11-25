@@ -2,6 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// Constants
+import 'package:uitmscheduler/constants/colors.dart';
+
 // Widgets
 import 'package:uitmscheduler/views/widgets/faculty_input_field.dart';
 
@@ -17,15 +20,17 @@ class _FacultySelectionState extends ConsumerState<FacultySelection> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColor.lightBackground,
       // resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text("Choose your faculty"),
+        backgroundColor: AppColor.lightPrimary,
       ),
       body: Container(
         child: FacultyInputField(),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: AppColor.lightPrimary,
         icon: const Icon(Icons.navigate_next),
         label: const Text('Next'),
         onPressed: () async {

@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// Constants
+import 'package:uitmscheduler/constants/colors.dart';
+
 // Import packages
 import '../../packages/timetable_view/timetable_view.dart';
 
@@ -40,6 +43,7 @@ class Result extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(
           title: const Text("UiTM Scheduler"),
+          backgroundColor: AppColor.lightPrimary,
         ),
         body: TimetableView(
           laneEventsList: _buildLaneEvents(detailListState),

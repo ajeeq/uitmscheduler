@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uitmscheduler/constants/colors.dart';
 
 class TimetableStyle {
   final int startHour;
@@ -47,14 +48,14 @@ class TimetableStyle {
   const TimetableStyle(
       {this.startHour: 0,
       this.endHour: 24,
-      this.laneColor: Colors.white,
-      this.cornerColor: Colors.white,
-      this.timelineColor: Colors.white,
-      this.timelineItemColor: Colors.white,
-      this.mainBackgroundColor: Colors.white,
+      this.laneColor: AppColor.lightBackground,
+      this.cornerColor: AppColor.lightBackground,
+      this.timelineColor: AppColor.lightBackground,
+      this.timelineItemColor: AppColor.lightBackground,
+      this.mainBackgroundColor: AppColor.lightBackground,
       this.decorationLineBorderColor: const Color(0x1A000000),
       this.timelineBorderColor: const Color(0x1A000000),
-      this.timeItemTextColor: Colors.blue,
+      this.timeItemTextColor: AppColor.lightPrimary,
       this.laneWidth: 300,
       this.laneHeight: 35,
       this.timeItemHeight: 75,

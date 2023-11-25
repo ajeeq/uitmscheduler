@@ -2,6 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// Constants
+import 'package:uitmscheduler/constants/colors.dart';
+
 // Widgets
 import 'package:uitmscheduler/views/widgets/group_input_field.dart';
 
@@ -33,15 +36,17 @@ class _GroupSelectionState extends ConsumerState<GroupSelection> {
     final groupNameState = ref.watch(groupNameProvider);
 
     return Scaffold(
+      backgroundColor: AppColor.lightBackground,
       // resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text("Choose your group"),
+        backgroundColor: AppColor.lightPrimary
       ),
       body: Container(
         child: GroupInputField(),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: AppColor.lightPrimary,
         icon: const Icon(Icons.done),
         label: const Text('Done'),
         onPressed: () async {
