@@ -16,6 +16,7 @@ import 'package:uitmscheduler/views/faculty_selection.dart';
 import 'package:uitmscheduler/views/course_selection.dart';
 import 'package:uitmscheduler/views/group_selection.dart';
 import 'package:uitmscheduler/views/result.dart';
+import 'package:uitmscheduler/views/experimental_home.dart';
 
 Future main() async {
   await Hive.initFlutter();
@@ -37,12 +38,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/',
       routes: {
+        // main screens
         '/': (context) => Home(),
         '/campus_selection': (context) => CampusSelection(),
         '/faculty_selection': (context) => FacultySelection(),
         '/course_selection': (context) => CourseSelection(),
         '/group_selection': (context) => GroupSelection(),
         '/result': (context) => Result(),
+
+        // experimental screens
+        '/experimental_home': (context) => ExperimentalHome()
       },
     );
   }

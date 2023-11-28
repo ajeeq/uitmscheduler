@@ -1,4 +1,4 @@
-// Import directives
+ // Import directives
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -24,19 +24,18 @@ import 'package:uitmscheduler/models/campus_faculty.dart';
 import 'package:uitmscheduler/providers/selected_providers.dart';
 import 'package:uitmscheduler/providers/detail_providers.dart';
 
-class Home extends ConsumerStatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class ExperimentalHome extends ConsumerStatefulWidget {
+  const ExperimentalHome({Key? key}) : super(key: key);
 
   @override
-  _HomeState createState() => _HomeState();
+  _ExperimentalHomeState createState() => _ExperimentalHomeState();
 }
 
-class _HomeState extends ConsumerState<Home>{
+class _ExperimentalHomeState extends ConsumerState<ExperimentalHome>{
   // const Home({Key? key}) : super(key: key);
 
   String _errorMessage = '';
   bool data = false;
-  bool isExperimental = true;
 
   @override
   Widget build(BuildContext context) {
@@ -55,14 +54,14 @@ class _HomeState extends ConsumerState<Home>{
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("UiTM Scheduler"),
+        title: const Text("Experimental"),
         backgroundColor: AppColor.lightPrimary,
       ),
       body: ValueListenableBuilder(
-        valueListenable: HiveSelectedCourse.box.listenable(),
-        builder: (context, Box box, widget) {
-          return SafeArea(
-            child: box.isEmpty 
+          valueListenable: HiveSelectedCourse.box.listenable(),
+          builder: (context, Box box, widget) {
+            return SafeArea(
+              child: box.isEmpty 
               ? Container(
                 color: AppColor.lightBackground,
                 child: Column(
@@ -133,50 +132,10 @@ class _HomeState extends ConsumerState<Home>{
                       ),
                     ],
                   ),
-                )
+              )
             );
-        }
-      ),
-
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: AppColor.lightPrimary,
-              ),
-              child: Text('UiTM Scheduler 0.5.2'),
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.discord,
-              ),
-              title: const Text('Get Help on Discord!'),
-              onTap: () async {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                // Navigator.pop(context);
-                // Navigator.pushNamed(context, '/help');
-                discordUrlLauncher();
-              },
-            ),
-
-            isExperimental
-              ? ListTile(
-                  leading: const Icon(
-                    Icons.settings,
-                  ),
-                  title: const Text('Experimental'),
-                  onTap: () {
-                    Navigator.pushNamed(context, "/experimental_home");
-                  },
-                )
-              : const SizedBox.shrink()
-          ]
-        )
-      ),
+          }
+        ),
       
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
