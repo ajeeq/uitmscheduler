@@ -18,7 +18,6 @@ import 'package:uitmscheduler/constants/colors.dart';
 // Models
 import 'package:uitmscheduler/models/detail.dart';
 import 'package:uitmscheduler/models/selected.dart';
-import 'package:uitmscheduler/models/campus_faculty.dart';
 
 // Providers
 import 'package:uitmscheduler/providers/selected_providers.dart';
@@ -32,10 +31,8 @@ class Home extends ConsumerStatefulWidget {
 }
 
 class _HomeState extends ConsumerState<Home>{
-  // const Home({Key? key}) : super(key: key);
-
   String _errorMessage = '';
-  bool data = false;
+  bool isEmpty = false;
   bool isExperimental = true;
 
   @override
@@ -61,6 +58,11 @@ class _HomeState extends ConsumerState<Home>{
       body: ValueListenableBuilder(
         valueListenable: HiveSelectedCourse.box.listenable(),
         builder: (context, Box box, widget) {
+          // if(box.isEmpty) {
+          //   isEmpty = true;
+          // } else {
+          //   isEmpty = false;
+          // }
           return SafeArea(
             child: box.isEmpty 
               ? Container(
@@ -146,7 +148,7 @@ class _HomeState extends ConsumerState<Home>{
               decoration: BoxDecoration(
                 color: AppColor.lightPrimary,
               ),
-              child: Text('UiTM Scheduler 0.5.2'),
+              child: Text('UiTM Scheduler 0.6.0'),
             ),
             ListTile(
               leading: const Icon(
@@ -187,8 +189,8 @@ class _HomeState extends ConsumerState<Home>{
             backgroundColor: AppColor.lightPrimary,
             child: const Icon(Icons.add),
             onPressed: () {
-              Services.getCampusesFaculties().then((campuses) {
-                if(campuses.campuses.isEmpty) {
+              Services.getCampuses().then((data) {
+                if(data.results.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text("No data available from the iCRESS at the moment😐"),
@@ -196,7 +198,9 @@ class _HomeState extends ConsumerState<Home>{
                     ),
                   );
                 } else {
-                  Navigator.pushNamed(context, '/campus_selection');
+                  Navigator.pushNamed(context, '/campus_selection', arguments: {
+                    'campuses': data.results
+                  });
                 }
               }).catchError((e) {
                   setState(() {
@@ -212,11 +216,11 @@ class _HomeState extends ConsumerState<Home>{
             },
           ),
 
-          data 
+          !isEmpty 
             ? const SizedBox(height: 16)
             : const SizedBox.shrink(),
 
-          data 
+          !isEmpty 
             ? FloatingActionButton(
                 tooltip: "Fetch Details",
                 heroTag: "fetch",

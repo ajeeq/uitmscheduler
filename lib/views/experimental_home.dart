@@ -146,8 +146,8 @@ class _ExperimentalHomeState extends ConsumerState<ExperimentalHome>{
             backgroundColor: AppColor.lightPrimary,
             child: const Icon(Icons.add),
             onPressed: () {
-              Services.getCampusesFaculties().then((campuses) {
-                if(campuses.campuses.isEmpty) {
+              Services.getCampuses().then((data) {
+                if(data.results.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text("No data available from the iCRESS at the moment😐"),

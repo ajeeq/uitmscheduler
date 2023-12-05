@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uitmscheduler/constants/colors.dart';
 
 class Lane {
   final String name;
@@ -21,7 +22,7 @@ class Lane {
     required this.laneIndex,
     this.height: 70,
     this.width: 300,
-    this.backgroundColor: Colors.white,
-    this.textStyle: const TextStyle(color: Colors.blue),
+    this.backgroundColor: AppColor.lightBackground,
+    this.textStyle: const TextStyle(color: AppColor.lightPrimary),
   });
 }

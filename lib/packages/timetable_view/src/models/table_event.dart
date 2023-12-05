@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uitmscheduler/packages/timetable_view/src/models/table_event_time.dart';
+import 'package:uitmscheduler/constants/colors.dart';
 
 class TableEvent {
   final String title;
@@ -43,7 +44,7 @@ class TableEvent {
     this.margin: const EdgeInsets.all(1),
     // this.onTap,
     this.decoration,
-    this.backgroundColor: const Color(0xCC2196F3),
+    this.backgroundColor: AppColor.lightPrimary,
     this.textStyle: const TextStyle(color: Colors.white),
   })  : assert(endTime.isAfter(startTime));
 }

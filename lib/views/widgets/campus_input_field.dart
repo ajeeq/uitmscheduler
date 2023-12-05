@@ -15,7 +15,12 @@ import 'package:uitmscheduler/providers/campus_providers.dart';
 import 'package:uitmscheduler/providers/course_providers.dart';
 
 class CampusInputField extends ConsumerStatefulWidget {
-  const CampusInputField({Key? key}) : super(key: key);
+  const CampusInputField({
+    Key? key,
+    required this.campuses
+  }) : super(key: key);
+
+  final List<Result> campuses;
 
   @override
   _CampusInputFieldState createState() => _CampusInputFieldState();
@@ -30,7 +35,7 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
 
   bool _isLoading = false;
   String _errorMessage = '';
-  List<CampusElement> _campuses = [];
+  List<Result> _campuses = [];
 
   late String _selectedCampus;
 
@@ -38,32 +43,13 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
   void initState() {
     super.initState();
 
-    _isLoading = true;
-
-    Services.getCampusesFaculties().then((campuses) {
-      final List<CampusElement> jsonStringCampusList = campuses.campuses;
-      
-      setState(() {
-        _campuses = jsonStringCampusList;
-        _isLoading = false;
-      });
-
+    Future<void>.delayed(Duration.zero, () {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Data loaded from iCRESS successfully!"),
           duration: Duration(seconds: 5),
         ),
       );
-    }).catchError((e) {
-        setState(() {
-          _errorMessage = e.toString();
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(_errorMessage),
-            duration: const Duration(seconds: 5),
-          ),
-        );
     });
   }
 
@@ -78,6 +64,7 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
     // declaring notifiers for updating riverpod states
     final CampusNameNotifier campusController = ref.read(campusNameProvider.notifier);
     final CourseListNotifier courseListController = ref.read(courseListProvider.notifier);
+    final campuses = widget.campuses;
 
     if (_isLoading) {
       return Center(
@@ -103,7 +90,7 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
               Form(
                 key: this._formKey,
                 child: Padding(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -118,7 +105,7 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
                       TypeAheadFormField(
                         textFieldConfiguration: TextFieldConfiguration(
                           decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.search),
+                            prefixIcon: const Icon(Icons.search),
                             suffixIcon: IconButton(
                               onPressed: () => this._typeAheadController.clear(),
                               icon: const Icon(Icons.clear),
@@ -143,7 +130,7 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
                           controller: this._typeAheadController,
                         ),
                         suggestionsCallback: (pattern) {
-                          Iterable<String> items = _campuses.map((e) => (e.campus));
+                          Iterable<String> items = campuses.map((e) => (e.text));
                           return items.where((e) => e.toLowerCase().contains(pattern.toLowerCase())).toList();
                         },
                         itemBuilder: (context, String suggestion) {
@@ -165,17 +152,10 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
                         ),
                         onSuggestionSelected: (String suggestion) {
                           this._typeAheadController.text = suggestion;
-        
                           _selectedCampus = suggestion;
+
+                          // updating selected campus name in state(riverpod)
                           campusController.updateSelectedCampusName(_selectedCampus);
-        
-                          Services.getCourses(suggestion, "").then((courses) {
-                            final List<CourseElement> jsonStringData = courses.courses;
-        
-                            // updating course list state using Riverpod
-                            courseListController.updateCourseList(jsonStringData);
-                          });
-        
                         },
                         suggestionsBoxController: suggestionBoxController,
                         suggestionsBoxDecoration: SuggestionsBoxDecoration(
