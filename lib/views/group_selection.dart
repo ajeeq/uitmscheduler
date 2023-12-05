@@ -2,8 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// Constants
+import 'package:uitmscheduler/constants/colors.dart';
+
 // Widgets
-import 'package:uitmscheduler/screens/widgets/group_input_field.dart';
+import 'package:uitmscheduler/views/widgets/group_input_field.dart';
 
 // Models
 import 'package:uitmscheduler/models/selected.dart';
@@ -29,25 +32,29 @@ class _GroupSelectionState extends ConsumerState<GroupSelection> {
     // declaring riverpod state providers
     final campusNameState = ref.watch(campusNameProvider);
     final courseNameState = ref.watch(courseNameProvider);
+    final courseUrlState = ref.watch(courseUrlProvider);
     final facultyNameState = ref.watch(facultyNameProvider);
     final groupNameState = ref.watch(groupNameProvider);
 
     return Scaffold(
+      backgroundColor: AppColor.lightBackground,
       // resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text("Choose your group"),
+        backgroundColor: AppColor.lightPrimary
       ),
       body: Container(
         child: GroupInputField(),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: AppColor.lightPrimary,
         icon: const Icon(Icons.done),
         label: const Text('Done'),
         onPressed: () async {
           final selection = Selected(
             campusSelected: campusNameState.toString(),
             courseSelected: courseNameState.toString(),
+            courseUrlSelected: courseUrlState.toString(),
             facultySelected: facultyNameState.toString(),
             groupSelected: groupNameState.toString()
           );
