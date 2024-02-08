@@ -33,7 +33,7 @@ class Services {
           return campusFacultyFromJson(campusList);
         }
         catch (e) {
-          rethrow;
+          throw 'No campus data available from iCRESS!';
         }
       }
       else {
@@ -54,7 +54,7 @@ class Services {
           return campusFacultyFromJson(facultyList);
         }
         catch (e) {
-          rethrow;
+          throw 'No faculty data available from iCRESS!';
         }
       }
       else {
@@ -128,7 +128,8 @@ class Services {
           return courseFromJson(courseList);
         }
         catch (e) {
-          rethrow;
+          // rethrow;
+          throw 'No course data available from iCRESS!';
         }
       } else {
         throw 'Error connecting to iCRESS😐';
@@ -178,7 +179,8 @@ class Services {
           return groupFromJson(groupList);
         }
         catch (e) {
-          rethrow;
+          // rethrow;
+          throw 'No group data available from iCRESS!';
         }
       }
       else {

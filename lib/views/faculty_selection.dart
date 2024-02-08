@@ -27,6 +27,7 @@ class FacultySelection extends ConsumerStatefulWidget {
 }
 
 class _FacultySelectionState extends ConsumerState<FacultySelection> {
+   String _errorMessage = '';
 
   @override
   Widget build(BuildContext context) {
@@ -54,13 +55,31 @@ class _FacultySelectionState extends ConsumerState<FacultySelection> {
           final facultyNameState = ref.watch(facultyNameProvider);
 
           Services.getCourses(campusNameState, facultyNameState).then((courses) {
-            final List<CourseElement> jsonStringData = courses.courses;
+            if(courses.courses.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("No data available from the iCRESS at the moment😐"),
+                  duration: Duration(seconds: 5),
+                ),
+              );
+            } else {
+              final List<CourseElement> jsonStringData = courses.courses;
 
-            // updating course list state using Riverpod
-            courseListController.updateCourseList(jsonStringData);
+              // updating course list state using Riverpod
+              courseListController.updateCourseList(jsonStringData);
+              Navigator.pushNamed(context, '/course_selection');
+            }
+          }).catchError((e) {
+              setState(() {
+                _errorMessage = e.toString();
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(_errorMessage),
+                  duration: const Duration(seconds: 5),
+                ),
+              );
           });
-
-          Navigator.pushNamed(context, '/course_selection');
         },
       ),
     );
