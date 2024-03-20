@@ -1,4 +1,5 @@
 import 'package:uitmscheduler/models/detail.dart';
+import 'dart:ui';
 
 class UtilsMain {
   static int getHourInt(String hour) {
@@ -58,6 +59,7 @@ class UtilsMain {
     }
     
   }
+
   static Set setStartDay(detailsList) {
     // Refer lib/darts/set_timetable_column.dart
     List dayColumn = [];
@@ -76,6 +78,29 @@ class UtilsMain {
       }
     }
 
-    return {dayColumn, dayToCompare};
+    return { dayColumn, dayToCompare };
+  }
+
+  static Set logicalPixelSafeArea() {
+    var pixelRatio = window.devicePixelRatio;
+
+    //Size in logical pixels
+    var logicalScreenSize = window.physicalSize / pixelRatio;
+    var logicalWidth = logicalScreenSize.width;
+
+    //Padding in physical pixels
+    var padding = window.padding;
+
+    //Safe area paddings in logical pixels
+    var paddingLeft = window.padding.left / window.devicePixelRatio;
+    var paddingRight = window.padding.right / window.devicePixelRatio;
+    var paddingTop = window.padding.top / window.devicePixelRatio;
+    var paddingBottom = window.padding.bottom / window.devicePixelRatio;
+
+    //Safe area in logical pixels
+    var safeWidth = logicalWidth - paddingLeft - paddingRight;
+    var safeHeight = logicalWidth - paddingTop - paddingBottom;
+
+    return { safeWidth, safeHeight };
   }
 }

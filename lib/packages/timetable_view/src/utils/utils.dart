@@ -74,19 +74,13 @@ class Utils {
         text: '${event.title}\n',
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
       ),
-      // TextSpan(text: event.location, style: TextStyle(color: Colors.white60)),
-      // TextSpan(
-      //   text: body != null
-      //       ? ' $body\n\n'
-      //       : ' ${Utils.hourFormatter(event.startTime.hour, event.startTime.minute, false)} - ${Utils.hourFormatter(event.endTime.hour, event.endTime.minute, false)}\n',
-      // ),
       TextSpan(
         text: '${event.body}\n',
         style: TextStyle(fontSize: 10),
       ),
       TextSpan(
-        text: '${event.caption}\n',
-        style: TextStyle(fontSize: 10),
+        text: '${Utils.hourFormatter(event.startTime.hour, event.startTime.minute, false)} - ${Utils.hourFormatter(event.endTime.hour, event.endTime.minute, false)}',
+        style: TextStyle(fontStyle: FontStyle.italic, fontSize: 10),
       ),
 
     ];
