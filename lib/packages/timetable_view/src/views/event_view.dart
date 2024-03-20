@@ -10,20 +10,20 @@ class EventView extends StatelessWidget {
   final TimetableStyle timetableStyle;
 
   //  Uniquely identifies which lane the event belongs to or falls other
-  final int laneIndex;
+  // final int laneIndex;
 
   /// Called when an event is tapped
-  final void Function(TableEvent event) onEventTap;
+  // final void Function(TableEvent event) onEventTap;
 
   //TODO: Delete lane Index implementation
 
-  const EventView(
-      {Key? key,
-      required this.event,
-      required this.timetableStyle,
-      required this.laneIndex,
-      required this.onEventTap})
-      : super(key: key);
+  const EventView({
+    Key? key,
+    required this.event,
+    required this.timetableStyle,
+    // required this.laneIndex,
+    // required this.onEventTap
+    }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +33,10 @@ class EventView extends StatelessWidget {
       left: 0,
       width: timetableStyle.laneWidth,
       child: GestureDetector(
-        onTap: () {
-          onEventTap(event);
-        },
+        // onTap: () {
+        //   onEventTap(event);
+        // },
+        onTap: event.onTap,
         child: Container(
           decoration: event.decoration ??
                   BoxDecoration(color: event.backgroundColor),

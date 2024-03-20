@@ -10,19 +10,19 @@ class LaneView extends StatelessWidget {
   /// Index is used to uniquely identify each lane
   final int index;
 
-  final Function(int laneIndex, TableEventTime start, TableEventTime end)
-      onEmptyCellTap;
+  // final Function(int laneIndex, TableEventTime start, TableEventTime end)
+  //     onEmptyCellTap;
 
   /// Called when an event is tapped
-  final void Function(TableEvent event) onEventTap;
+  // final void Function(TableEvent event) onEventTap;
 
   const LaneView({
     Key? key,
     required this.events,
     required this.timetableStyle,
     required this.index,
-    required this.onEmptyCellTap,
-    required this.onEventTap,
+    // required this.onEmptyCellTap,
+    // required this.onEventTap,
   })  : super(key: key);
 
   @override
@@ -50,13 +50,13 @@ class LaneView extends StatelessWidget {
             )
           ],
           // draw the empty time slots before you draw the events.
-          ..._buildEmptyTimeSlots(index),
+          // ..._buildEmptyTimeSlots(index),
           ...events.map((event) {
             return EventView(
-              onEventTap: onEventTap,
+              // onEventTap: onEventTap,
               event: event,
               timetableStyle: timetableStyle,
-              laneIndex: index,
+              // laneIndex: index,
             );
           }).toList(),
         ],
@@ -70,22 +70,22 @@ class LaneView extends StatelessWidget {
   }
 
   /// Draws the Empty Time Slot for each Lane
-  _buildEmptyTimeSlots(int laneIndex) {
-    List<_EmptyTimeSlot> emptyTimeSlots = <_EmptyTimeSlot>[];
+  // _buildEmptyTimeSlots(int laneIndex) {
+  //   List<_EmptyTimeSlot> emptyTimeSlots = <_EmptyTimeSlot>[];
 
-    // I don't know if this is performant but i cant think of something else for now
-    for (int i = timetableStyle.startHour; i < timetableStyle.endHour; i++) {
-      emptyTimeSlots.add(_EmptyTimeSlot(
-        timetableStyle: timetableStyle,
-        laneIndex: laneIndex,
-        onTap: onEmptyCellTap,
-        start: TableEventTime(hour: i, minute: 0),
-        end: TableEventTime(hour: i + 1, minute: 0),
-      ));
-    }
+  //   // I don't know if this is performant but i cant think of something else for now
+  //   for (int i = timetableStyle.startHour; i < timetableStyle.endHour; i++) {
+  //     emptyTimeSlots.add(_EmptyTimeSlot(
+  //       timetableStyle: timetableStyle,
+  //       laneIndex: laneIndex,
+  //       onTap: onEmptyCellTap,
+  //       start: TableEventTime(hour: i, minute: 0),
+  //       end: TableEventTime(hour: i + 1, minute: 0),
+  //     ));
+  //   }
 
-    return emptyTimeSlots;
-  }
+  //   return emptyTimeSlots;
+  // }
 }
 
 class _EmptyTimeSlot extends StatelessWidget {

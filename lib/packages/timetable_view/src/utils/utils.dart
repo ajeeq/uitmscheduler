@@ -21,15 +21,11 @@ class Utils {
   }
 
   static String dateFormatter(int year, int month, int day) {
-    return year.toString() +
-        '-' +
-        _addLeadingZero(month) +
-        '-' +
-        _addLeadingZero(day);
+    return '$year-${_addLeadingZero(month)}-${_addLeadingZero(day)}';
   }
 
   static String formatHourInto24Hours(int hour, int minute) {
-    return _addLeadingZero(hour) + ':' + _addLeadingZero(minute);
+    return '${_addLeadingZero(hour)}:${_addLeadingZero(minute)}';
   }
 
   static String hourFormatter(int hour, int minute, bool showAsAMPM) {
@@ -39,6 +35,12 @@ class Utils {
       return formatHourInto24Hours(hour, minute);
     }
   }
+
+  // static String hourFormatter(int hour, int minute, [bool showMinutes = true]) {
+  //   return showMinutes
+  //       ? '${_addLeadingZero(hour)}:${_addLeadingZero(minute)}'
+  //       : _addLeadingZero(hour);
+  // }
 
   static String formatHourIntoAmPM(int hour, int minute) {
     String formattedString = '';
@@ -52,7 +54,7 @@ class Utils {
 
     // if minute is 0, just display time as 12 Am, or 2 PM
     if (minute > 0) {
-      formattedString += ":" + _addLeadingZero(minute);
+      formattedString += ":${_addLeadingZero(minute)}";
     }
 
     formattedString += " ${hour >= 12 ? "PM" : "AM"}";
@@ -60,6 +62,7 @@ class Utils {
     return formattedString;
   }
 
+  /// default text inside event
   static Widget eventText(
     TableEvent event,
     BuildContext context,
@@ -68,10 +71,24 @@ class Utils {
   ) {
     List<TextSpan> text = [
       TextSpan(
-        text: event.title,
-        style: TextStyle(fontWeight: FontWeight.bold),
+        text: '${event.title}\n',
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
       ),
-      TextSpan(text: event.location, style: TextStyle(color: Colors.white60)),
+      // TextSpan(text: event.location, style: TextStyle(color: Colors.white60)),
+      // TextSpan(
+      //   text: body != null
+      //       ? ' $body\n\n'
+      //       : ' ${Utils.hourFormatter(event.startTime.hour, event.startTime.minute, false)} - ${Utils.hourFormatter(event.endTime.hour, event.endTime.minute, false)}\n',
+      // ),
+      TextSpan(
+        text: '${event.body}\n',
+        style: TextStyle(fontSize: 10),
+      ),
+      TextSpan(
+        text: '${event.caption}\n',
+        style: TextStyle(fontSize: 10),
+      ),
+
     ];
 
     bool? exceedHeight;
