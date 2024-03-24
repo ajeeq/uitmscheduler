@@ -43,6 +43,8 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   flutter_typeahead: ^4.3.7
+  hooks_riverpod: ^2.5.1
+  flutter_hooks: ^0.20.5
 
 dev_dependencies:
   flutter_test:

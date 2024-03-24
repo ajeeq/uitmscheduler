@@ -51,6 +51,7 @@ class _HomeState extends ConsumerState<Home>{
     }
 
     return Scaffold(
+      backgroundColor: AppColor.lightBackground,
       appBar: AppBar(
         title: const Text("UiTM Scheduler"),
         backgroundColor: AppColor.lightPrimary,

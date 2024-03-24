@@ -37,6 +37,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       initialRoute: '/',
+      theme: ThemeData(
+        useMaterial3: false,
+      ),
       routes: {
         // main screens
         '/': (context) => Home(),

@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Constants
 import 'package:uitmscheduler/constants/colors.dart';
@@ -15,7 +17,7 @@ import 'package:uitmscheduler/utils/utils_main.dart';
 // Provider
 import 'package:uitmscheduler/providers/detail_providers.dart';
 
-class Result extends ConsumerWidget {
+class Result extends HookConsumerWidget {
   const Result({Key? key}) : super(key: key);
 
   @override
@@ -30,6 +32,7 @@ class Result extends ConsumerWidget {
     int endHour = 17;
     List<LaneEvents> laneEvents = [];
     List<Lane> lanes = [];
+    final isFullScreen = useState(false);
 
     var safeWidth = UtilsMain.logicalPixelSafeArea().elementAt(0);
 
@@ -76,23 +79,41 @@ class Result extends ConsumerWidget {
 
     try {
       return Scaffold(
-        appBar: AppBar(
-          title: const Text("UiTM Scheduler"),
-          backgroundColor: AppColor.lightPrimary,
+        appBar: isFullScreen.value
+          ? null
+          : AppBar(
+            title: const Text("UiTM Scheduler"),
+            backgroundColor: AppColor.lightPrimary,
         ),
         /// TODO: update this view
-        body: Container(
-          color: AppColor.lightBackground,
-          child: TimetableView(
-            laneEventsList: laneEvents,
-            timetableStyle: TimetableStyle(
-              /// responsive layout while providing little padding at the end
-              laneWidth: (safeWidth - 70) / 5,
-              startHour: startHour,
-              endHour: endHour,
+        body: SafeArea(
+          child: Container(
+            color: AppColor.lightBackground,
+            child: TimetableView(
+              laneEventsList: laneEvents,
+              timetableStyle: TimetableStyle(
+                /// responsive layout while providing little padding at the end
+                laneWidth: (safeWidth - 70) / 5,
+                startHour: startHour,
+                endHour: endHour,
+              ),
             ),
           ),
         ),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            FloatingActionButton(
+              tooltip: "Full screen",
+              heroTag: "fullscreen",
+              backgroundColor: AppColor.lightPrimary,
+              child: isFullScreen.value 
+                ? const Icon(Icons.fullscreen_exit) 
+                : const Icon(Icons.fullscreen),
+              onPressed: () => isFullScreen.value = !isFullScreen.value
+            )
+          ]
+        )
       );
     }
     catch (e) {
