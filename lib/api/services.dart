@@ -2,6 +2,7 @@
 /// https://simsweb4.uitm.edu.my/estudent/class_timetable/index.htm
 
 // Import directives
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 
@@ -23,8 +24,33 @@ var headers = {
 };
 
 class Services {
+  /// Temporary "Redirect loop detected" error fix
+  static Future redirectLoopFix(url) async {
+    var isRedirect = true;
+
+    while (isRedirect) {
+      final client = http.Client();
+      final request = http.Request('GET', Uri.parse(url))
+            ..followRedirects = false
+            ..headers['cookie'] = 'security=true';
+      print(request.headers);
+      final response = await client.send(request);
+
+      if (response.statusCode == HttpStatus.movedTemporarily) {
+        isRedirect = response.isRedirect;
+        url = response.headers['location'];
+        print(url); 
+        // final receivedCookies = response.headers['set-cookie'];
+      } else if (response.statusCode == HttpStatus.ok) {
+        // print(await response.stream.join(''));
+      }
+    }
+  }
+
   // Fetching campus list
   static Future<CampusFaculty> getCampuses() async {
+    redirectLoopFix(campusLink);
+    await Future.delayed(Duration(milliseconds: 500));
     final response = await http.get(Uri.parse(campusLink), headers: headers);
     try {
       if (response.statusCode == 200) {
@@ -46,6 +72,7 @@ class Services {
 
   // Fetching faculty list
   static Future<CampusFaculty> getFaculties() async {
+    await Future.delayed(Duration(milliseconds: 500));
     final response = await http.get(Uri.parse(facultyLink), headers: headers);
     try {
       if (response.statusCode == 200) {
@@ -97,6 +124,7 @@ class Services {
 
     var body = "search_campus=$campusCode&search_faculty=$facultyCode&search_course=";
 
+    await Future.delayed(Duration(milliseconds: 500));
     final response = await http.post(Uri.parse(resultUrl), headers: resultHeaders, body: body);
     try {
       if (response.statusCode == 200) {
@@ -146,6 +174,7 @@ class Services {
     Group data;
     List<GroupElement> groups = [];
 
+    await Future.delayed(Duration(milliseconds: 500));
     final response = await http.get(Uri.parse(url), headers: headers);
     try {
       if (response.statusCode == 200) {
@@ -222,6 +251,7 @@ class Services {
       for (var i=0; i<input.length; i++) {
         courseUrl = courseUrlSelectedArray[i].toString();
 
+        await Future.delayed(Duration(milliseconds: 500));
         final response = await http.get(Uri.parse(courseUrl), headers: headers);
         try {
           if (response.statusCode == 200) {
