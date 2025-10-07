@@ -29,7 +29,7 @@ class CampusInputField extends ConsumerStatefulWidget {
 class _CampusInputFieldState extends ConsumerState<CampusInputField> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _typeAheadController = TextEditingController();
-  SuggestionsBoxController suggestionBoxController = SuggestionsBoxController();
+  SuggestionsController suggestionController = SuggestionsController();
 
   String? _selectedSaveCampus;
 
@@ -83,7 +83,7 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
         child: GestureDetector(
           // close the suggestions box when the user taps outside of it
           onTap: () {
-            suggestionBoxController.close();
+            suggestionController.close();
           },
           child: Column(
             children: [
@@ -102,46 +102,48 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
                           fontWeight: FontWeight.w900),
                       ),
                       
-                      TypeAheadFormField(
-                        textFieldConfiguration: TextFieldConfiguration(
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.search),
-                            suffixIcon: IconButton(
-                              onPressed: () => this._typeAheadController.clear(),
-                              icon: const Icon(Icons.clear),
+                      TypeAheadField<String>(
+                        builder: (context, controller, focusNode) {
+                          return TextField(
+                            controller: this._typeAheadController,
+                            decoration: InputDecoration(
+                              prefixIcon: const Icon(Icons.search),
+                              suffixIcon: IconButton(
+                                onPressed: () => this._typeAheadController.clear(),
+                                icon: const Icon(Icons.clear),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide:
+                                    BorderSide(color: Colors.grey[300]!),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide:
+                                    BorderSide(color: Colors.grey[300]!),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide:
+                                    BorderSide(color: Colors.grey[300]!),
+                              ),
+                              hintText: 'Search campus here',
                             ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide:
-                                  BorderSide(color: Colors.grey[300]!),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide:
-                                  BorderSide(color: Colors.grey[300]!),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              borderSide:
-                                  BorderSide(color: Colors.grey[300]!),
-                            ),
-                            hintText: 'Search campus here',
-                          ),
-                          controller: this._typeAheadController,
-                        ),
+                          );
+                        },
                         suggestionsCallback: (pattern) {
                           Iterable<String> items = campuses.map((e) => (e.text));
                           return items.where((e) => e.toLowerCase().contains(pattern.toLowerCase())).toList();
                         },
-                        itemBuilder: (context, String suggestion) {
+                        itemBuilder: (context, suggestion) {
                           return ListTile(
                             title: Text(suggestion),
                           );
                         },
-                        transitionBuilder: (context, suggestionsBox, controller) {
-                          return suggestionsBox;
-                        },
-                        noItemsFoundBuilder: (context) => Container(
+                        // transitionBuilder: (context, suggestionsBox, controller) {
+                        //   return suggestionsBox;
+                        // },
+                        emptyBuilder: (context) => Container(
                           height: 70,
                           child: const Center(
                             child: Text(
@@ -150,23 +152,25 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
                             ),
                           ),
                         ),
-                        onSuggestionSelected: (String suggestion) {
+                        onSelected: (suggestion) {
                           this._typeAheadController.text = suggestion;
                           _selectedCampus = suggestion;
 
                           // updating selected campus name in state(riverpod)
                           campusController.updateSelectedCampusName(_selectedCampus);
                         },
-                        suggestionsBoxController: suggestionBoxController,
-                        suggestionsBoxDecoration: SuggestionsBoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          elevation: 8.0,
-                          color: Theme.of(context).cardColor,
-                        ),
+                        // suggestionsController: suggestionController,
+                        decorationBuilder: (context, child) {
+                          return Material(
+                            borderRadius: BorderRadius.circular(8),
+                            elevation: 8.0,
+                            color: Theme.of(context).cardColor,
+                          );
+                        },
                         autoFlipDirection: true,
-                        autoFlipListDirection: true,
-                        validator: (value) => value!.isEmpty ? 'Please select a campus' : null,
-                        onSaved: (value) => this._selectedSaveCampus = value,
+                        // autoFlipListDirection: true,
+                        // validator: (value) => value!.isEmpty ? 'Please select a campus' : null,
+                        // onSaved: (value) => this._selectedSaveCampus = value,
                       ),
                     ],
                   ),
