@@ -25,7 +25,7 @@ class CourseInputField extends ConsumerStatefulWidget {
 class _CourseInputFieldState extends ConsumerState<CourseInputField> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _typeAheadController = TextEditingController();
-  SuggestionsBoxController suggestionBoxController = SuggestionsBoxController();
+  SuggestionsController suggestionController = SuggestionsController();
 
   String? _selectedSaveCourse;
 
@@ -46,7 +46,7 @@ class _CourseInputFieldState extends ConsumerState<CourseInputField> {
     return GestureDetector(
       // close the suggestions box when the user taps outside of it
       onTap: () {
-        suggestionBoxController.close();
+        suggestionController.close();
       },
       child: Container(
         // Add zero opacity to make the gesture detector work
@@ -67,33 +67,35 @@ class _CourseInputFieldState extends ConsumerState<CourseInputField> {
                     fontWeight: FontWeight.w900),
                 ),
                 
-                TypeAheadFormField(
-                  textFieldConfiguration: TextFieldConfiguration(
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
-                      suffixIcon: IconButton(
-                        onPressed: () => this._typeAheadController.clear(),
-                        icon: const Icon(Icons.clear),
+                TypeAheadField<String>(
+                  builder: (context, controller, focusNode) {
+                    return TextField(
+                      controller: this._typeAheadController,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.search),
+                        suffixIcon: IconButton(
+                          onPressed: () => this._typeAheadController.clear(),
+                          icon: const Icon(Icons.clear),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide:
+                              BorderSide(color: Colors.grey[300]!),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide:
+                              BorderSide(color: Colors.grey[300]!),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide:
+                              BorderSide(color: Colors.grey[300]!),
+                        ),
+                        hintText: 'Search course here',
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide:
-                            BorderSide(color: Colors.grey[300]!),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide:
-                            BorderSide(color: Colors.grey[300]!),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide:
-                            BorderSide(color: Colors.grey[300]!),
-                      ),
-                      hintText: 'Search course here',
-                    ),
-                    controller: this._typeAheadController,
-                  ),
+                    );
+                  },
                   suggestionsCallback: (pattern) {
                     Iterable<String> items = courseListState.map((e) => (e.course));
                     return items.where((e) => e.toLowerCase().contains(pattern.toLowerCase())).toList();
@@ -103,10 +105,10 @@ class _CourseInputFieldState extends ConsumerState<CourseInputField> {
                       title: Text(suggestion),
                     );
                   },
-                  transitionBuilder: (context, suggestionsBox, controller) {
-                    return suggestionsBox;
-                  },
-                  noItemsFoundBuilder: (context) => Container(
+                  // transitionBuilder: (context, suggestionsBox, controller) {
+                  //   return suggestionsBox;
+                  // },
+                  emptyBuilder: (context) => Container(
                     height: 70,
                     child: Center(
                       child: Text(
@@ -115,7 +117,7 @@ class _CourseInputFieldState extends ConsumerState<CourseInputField> {
                       ),
                     ),
                   ),
-                  onSuggestionSelected: (String suggestion) {
+                  onSelected: (String suggestion) {
                     this._typeAheadController.text = suggestion;
                     var url = '';
 
@@ -131,16 +133,18 @@ class _CourseInputFieldState extends ConsumerState<CourseInputField> {
                     courseUrlController.updateCourseUrl(url);
 
                   },
-                  suggestionsBoxController: suggestionBoxController,
-                  suggestionsBoxDecoration: SuggestionsBoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    elevation: 8.0,
-                    color: Theme.of(context).cardColor,
-                  ),
+                  // suggestionsController: suggestionController,
+                  decorationBuilder: (context, child) {
+                    return Material(
+                      borderRadius: BorderRadius.circular(8),
+                      elevation: 8.0,
+                      color: Theme.of(context).cardColor,
+                    );
+                  },
                   autoFlipDirection: true,
-                  autoFlipListDirection: true,
-                  validator: (value) => value!.isEmpty ? 'Please select a campus' : null,
-                  onSaved: (value) => this._selectedSaveCourse = value,
+                  // autoFlipListDirection: true,
+                  // validator: (value) => value!.isEmpty ? 'Please select a campus' : null,
+                  // onSaved: (value) => this._selectedSaveCourse = value,
                 ),
               ],
             ),

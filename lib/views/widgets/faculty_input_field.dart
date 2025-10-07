@@ -29,7 +29,7 @@ class FacultyInputField extends ConsumerStatefulWidget {
 class _FacultyInputFieldState extends ConsumerState<FacultyInputField> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _typeAheadController = TextEditingController();
-  SuggestionsBoxController suggestionBoxController = SuggestionsBoxController();
+  SuggestionsController suggestionBoxController = SuggestionsController();
 
   String? _selectedSaveFaculty;
 
@@ -80,33 +80,35 @@ class _FacultyInputFieldState extends ConsumerState<FacultyInputField> {
                     fontWeight: FontWeight.w900),
                 ),
                 
-                TypeAheadFormField(
-                  textFieldConfiguration: TextFieldConfiguration(
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
-                      suffixIcon: IconButton(
-                        onPressed: () => this._typeAheadController.clear(),
-                        icon: const Icon(Icons.clear),
+                TypeAheadField(
+                  builder: (context, controller, focusNode) {
+                    return TextField(
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.search),
+                        suffixIcon: IconButton(
+                          onPressed: () => this._typeAheadController.clear(),
+                          icon: const Icon(Icons.clear),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide:
+                              BorderSide(color: Colors.grey[300]!),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide:
+                              BorderSide(color: Colors.grey[300]!),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide:
+                              BorderSide(color: Colors.grey[300]!),
+                        ),
+                        hintText: 'Search faculty here',
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide:
-                            BorderSide(color: Colors.grey[300]!),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide:
-                            BorderSide(color: Colors.grey[300]!),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide:
-                            BorderSide(color: Colors.grey[300]!),
-                      ),
-                      hintText: 'Search faculty here',
-                    ),
-                    controller: this._typeAheadController,
-                  ),
+                      controller: this._typeAheadController,
+                    );
+                  },
                   suggestionsCallback: (pattern) {
                     Iterable<String> items = faculties.map((e) => (e.text));
                     return items.where((e) => e.toLowerCase().contains(pattern.toLowerCase())).toList();
@@ -116,10 +118,10 @@ class _FacultyInputFieldState extends ConsumerState<FacultyInputField> {
                       title: Text(suggestion),
                     );
                   },
-                  transitionBuilder: (context, suggestionsBox, controller) {
-                    return suggestionsBox;
-                  },
-                  noItemsFoundBuilder: (context) => Container(
+                  // transitionBuilder: (context, suggestionsBox, controller) {
+                  //   return suggestionsBox;
+                  // },
+                  emptyBuilder: (context) => Container(
                     height: 70,
                     child: Center(
                       child: Text(
@@ -128,23 +130,25 @@ class _FacultyInputFieldState extends ConsumerState<FacultyInputField> {
                       ),
                     ),
                   ),
-                  onSuggestionSelected: (String suggestion) {
+                  onSelected: (String suggestion) {
                     this._typeAheadController.text = suggestion;
                     _selectedFaculty = suggestion;
 
                     // updating selected faculty name in state(riverpod)
                     facultyController.updateSelectedFacultyName(_selectedFaculty);
                   },
-                  suggestionsBoxController: suggestionBoxController,
-                  suggestionsBoxDecoration: SuggestionsBoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    elevation: 8.0,
-                    color: Theme.of(context).cardColor,
-                  ),
+                  // suggestionsBoxController: suggestionBoxController,
+                  decorationBuilder: (context, child) {
+                    return Material(
+                      borderRadius: BorderRadius.circular(8),
+                      elevation: 8.0,
+                      color: Theme.of(context).cardColor,
+                    );
+                  },
                   autoFlipDirection: true,
-                  autoFlipListDirection: true,
-                  validator: (value) => value!.isEmpty ? 'Please select a faculty' : null,
-                  onSaved: (value) => this._selectedSaveFaculty = value,
+                  // autoFlipListDirection: true,
+                  // validator: (value) => value!.isEmpty ? 'Please select a faculty' : null,
+                  // onSaved: (value) => this._selectedSaveFaculty = value,
                 ),
 
                 SizedBox(height: 4),
