@@ -80,9 +80,15 @@ class _FacultyInputFieldState extends ConsumerState<FacultyInputField> {
                     fontWeight: FontWeight.w900),
                 ),
                 
-                TypeAheadField(
+                TypeAheadField<String>(
+                  suggestionsCallback: (pattern) {
+                    Iterable<String> items = faculties.map((e) => (e.text));
+                    return items.where((e) => e.toLowerCase().contains(pattern.toLowerCase())).toList();
+                  },
                   builder: (context, controller, focusNode) {
                     return TextField(
+                      controller: _typeAheadController,
+                      focusNode: focusNode,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.search),
                         suffixIcon: IconButton(
@@ -106,21 +112,22 @@ class _FacultyInputFieldState extends ConsumerState<FacultyInputField> {
                         ),
                         hintText: 'Search faculty here',
                       ),
-                      controller: this._typeAheadController,
                     );
                   },
-                  suggestionsCallback: (pattern) {
-                    Iterable<String> items = faculties.map((e) => (e.text));
-                    return items.where((e) => e.toLowerCase().contains(pattern.toLowerCase())).toList();
-                  },
-                  itemBuilder: (context, String suggestion) {
+                  itemBuilder: (context, faculty) {
                     return ListTile(
-                      title: Text(suggestion),
+                      title: Text(faculty),
                     );
                   },
-                  // transitionBuilder: (context, suggestionsBox, controller) {
-                  //   return suggestionsBox;
-                  // },
+                  transitionBuilder: (context, animation, child) {
+                    return FadeTransition(
+                      opacity: CurvedAnimation(
+                        parent: animation,
+                        curve: Curves.fastOutSlowIn,
+                      ),
+                      child: child,
+                    );
+                  },
                   emptyBuilder: (context) => Container(
                     height: 70,
                     child: Center(
@@ -143,6 +150,7 @@ class _FacultyInputFieldState extends ConsumerState<FacultyInputField> {
                       borderRadius: BorderRadius.circular(8),
                       elevation: 8.0,
                       color: Theme.of(context).cardColor,
+                      child: child
                     );
                   },
                   autoFlipDirection: true,
