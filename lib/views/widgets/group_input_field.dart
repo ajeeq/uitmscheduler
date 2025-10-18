@@ -54,13 +54,19 @@ class _GroupInputFieldState extends ConsumerState<GroupInputField> {
                     fontWeight: FontWeight.w900),
                 ),
                 
-                TypeAheadField(
+                TypeAheadField<String>(
+                  suggestionsCallback: (pattern) {
+                    Iterable<String> items = groupListState.map((e) => (e.group));
+                    return items.where((e) => e.toLowerCase().contains(pattern.toLowerCase())).toList();
+                  },
                   builder: (context, controller, focusNode) {
                     return TextField(
+                      controller: _typeAheadController,
+                      focusNode: focusNode,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.search),
                         suffixIcon: IconButton(
-                          onPressed: () => this._typeAheadController.clear(),
+                          onPressed: () => _typeAheadController.clear(),
                           icon: const Icon(Icons.clear),
                         ),
                         border: OutlineInputBorder(
@@ -80,21 +86,22 @@ class _GroupInputFieldState extends ConsumerState<GroupInputField> {
                         ),
                         hintText: 'Search group here',
                       ),
-                      controller: this._typeAheadController,
                     );
                   },
-                  suggestionsCallback: (pattern) {
-                    Iterable<String> items = groupListState.map((e) => (e.group));
-                    return items.where((e) => e.toLowerCase().contains(pattern.toLowerCase())).toList();
-                  },
-                  itemBuilder: (context, String suggestion) {
+                  itemBuilder: (context, group) {
                     return ListTile(
-                      title: Text(suggestion),
+                      title: Text(group),
                     );
                   },
-                  // transitionBuilder: (context, suggestionsBox, controller) {
-                  //   return suggestionsBox;
-                  // },
+                  transitionBuilder: (context, animation, child) {
+                    return FadeTransition(
+                      opacity: CurvedAnimation(
+                        parent: animation,
+                        curve: Curves.fastOutSlowIn,
+                      ),
+                      child: child,
+                    );
+                  },
                   emptyBuilder: (context) => Container(
                     height: 70,
                     child: Center(
@@ -105,7 +112,7 @@ class _GroupInputFieldState extends ConsumerState<GroupInputField> {
                     ),
                   ),
                   onSelected: (String suggestion) {
-                    this._typeAheadController.text = suggestion;
+                    _typeAheadController.text = suggestion;
 
                     // updating selected group name in state(riverpod)
                     groupNameController.updateSelectedGroupName(suggestion.toString());
@@ -117,6 +124,7 @@ class _GroupInputFieldState extends ConsumerState<GroupInputField> {
                       borderRadius: BorderRadius.circular(8),
                       elevation: 8.0,
                       color: Theme.of(context).cardColor,
+                      child: child
                     );
                   },
                   autoFlipDirection: true,

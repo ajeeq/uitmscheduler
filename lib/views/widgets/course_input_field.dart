@@ -68,13 +68,18 @@ class _CourseInputFieldState extends ConsumerState<CourseInputField> {
                 ),
                 
                 TypeAheadField<String>(
+                  suggestionsCallback: (pattern) {
+                    Iterable<String> items = courseListState.map((e) => (e.course));
+                    return items.where((e) => e.toLowerCase().contains(pattern.toLowerCase())).toList();
+                  },
                   builder: (context, controller, focusNode) {
                     return TextField(
-                      controller: this._typeAheadController,
+                      controller: _typeAheadController,
+                      focusNode: focusNode,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.search),
                         suffixIcon: IconButton(
-                          onPressed: () => this._typeAheadController.clear(),
+                          onPressed: () => _typeAheadController.clear(),
                           icon: const Icon(Icons.clear),
                         ),
                         border: OutlineInputBorder(
@@ -96,18 +101,20 @@ class _CourseInputFieldState extends ConsumerState<CourseInputField> {
                       ),
                     );
                   },
-                  suggestionsCallback: (pattern) {
-                    Iterable<String> items = courseListState.map((e) => (e.course));
-                    return items.where((e) => e.toLowerCase().contains(pattern.toLowerCase())).toList();
-                  },
-                  itemBuilder: (context, String suggestion) {
+                  itemBuilder: (context, course) {
                     return ListTile(
-                      title: Text(suggestion),
+                      title: Text(course),
                     );
                   },
-                  // transitionBuilder: (context, suggestionsBox, controller) {
-                  //   return suggestionsBox;
-                  // },
+                  transitionBuilder: (context, animation, child) {
+                    return FadeTransition(
+                      opacity: CurvedAnimation(
+                        parent: animation,
+                        curve: Curves.fastOutSlowIn,
+                      ),
+                      child: child,
+                    );
+                  },
                   emptyBuilder: (context) => Container(
                     height: 70,
                     child: Center(
@@ -118,7 +125,7 @@ class _CourseInputFieldState extends ConsumerState<CourseInputField> {
                     ),
                   ),
                   onSelected: (String suggestion) {
-                    this._typeAheadController.text = suggestion;
+                    _typeAheadController.text = suggestion;
                     var url = '';
 
                     for (var obj in courseListState) {
@@ -139,6 +146,7 @@ class _CourseInputFieldState extends ConsumerState<CourseInputField> {
                       borderRadius: BorderRadius.circular(8),
                       elevation: 8.0,
                       color: Theme.of(context).cardColor,
+                      child: child,
                     );
                   },
                   autoFlipDirection: true,

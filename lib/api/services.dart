@@ -2,6 +2,7 @@
 /// https://simsweb4.uitm.edu.my/estudent/class_timetable/index.htm
 
 // Import directives
+import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
@@ -13,8 +14,8 @@ import 'package:uitmscheduler/models/detail.dart';
 import 'package:uitmscheduler/models/group.dart';
 import 'package:uitmscheduler/models/selected.dart';
 
-const campusLink = 'https://simsweb4.uitm.edu.my/estudent/class_timetable/cfc/select.cfc?method=find_cam_icress_student&key=All&page=1&page_limit=30';
-const facultyLink = 'https://simsweb4.uitm.edu.my/estudent/class_timetable/cfc/select.cfc?method=find_fac_icress_student&key=All&page=1&page_limit=30';
+const campusLink = 'https://simsweb4.uitm.edu.my/estudent/class_timetable/cfc/select.cfc?method=CAM_lII1II11I1lIIII11IIl1I111I&key=All&page=1&page_limit=30';
+const facultyLink = 'https://simsweb4.uitm.edu.my/estudent/class_timetable/cfc/select.cfc?method=FAC_lII1II11I1lIIII11IIl1I111I&key=All&page=1&page_limit=30';
 const resultUrl ="https://simsweb4.uitm.edu.my/estudent/class_timetable/index_result.cfm";
 
 var headers = {
@@ -49,7 +50,7 @@ class Services {
 
   // Fetching campus list
   static Future<CampusFaculty> getCampuses() async {
-    redirectLoopFix(campusLink);
+    // redirectLoopFix(campusLink);
     await Future.delayed(Duration(milliseconds: 500));
     final response = await http.get(Uri.parse(campusLink), headers: headers);
     try {
@@ -59,11 +60,11 @@ class Services {
           return campusFacultyFromJson(campusList);
         }
         catch (e) {
-          throw 'No campus data available from iCRESS!';
+          throw 'getCampuses: No campus data available from iCRESS!';
         }
       }
       else {
-        throw 'Error connecting to iCRESS😐';
+        throw 'getCampuses: Error connecting to iCRESS😐';
       }
     } catch (e) {
       rethrow;
@@ -81,11 +82,11 @@ class Services {
           return campusFacultyFromJson(facultyList);
         }
         catch (e) {
-          throw 'No faculty data available from iCRESS!';
+          throw 'getFaculties: No faculty data available from iCRESS!';
         }
       }
       else {
-        throw 'Error connecting to iCRESS😐';
+        throw 'getFaculties: Error connecting to iCRESS😐';
       }
     } catch (e) {
       rethrow;
@@ -119,7 +120,7 @@ class Services {
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
       'content-type': 'application/x-www-form-urlencoded',
       "x-requested-with": "XMLHttpRequest",
-      "Referer": "https://simsweb4.uitm.edu.my/estudent/class_timetable/index.htm",
+      "Referer": "https://simsweb4.uitm.edu.my/estudent/class_timetable/index.cfm",
     };
 
     var body = "search_campus=$campusCode&search_faculty=$facultyCode&search_course=";
@@ -138,12 +139,11 @@ class Services {
           for (var i=0; i<trs.length; i++) {
             final num = trs[i].children[0].text.toString().trim();
             final course = trs[i].children[1].text.toString().trim();
-            final button = trs[i].getElementsByTagName('button[type="button"]')[0].attributes['onclick'];
-            final parts = button?.split("'");
-            final url = parts?[1] ?? '';
-            final fullUrl = courseBaseUrl + url;
-
-            var courseObj = CourseElement(num: num, course: course, url: fullUrl);
+            final button = trs[i].getElementsByTagName('a')[0].attributes['href'];
+            var url = button!.split("'")[0];
+            url = courseBaseUrl + url;
+            
+            var courseObj = CourseElement(num: num, course: course, url: url);
             courses.add(courseObj);
           }
 
@@ -157,10 +157,10 @@ class Services {
         }
         catch (e) {
           // rethrow;
-          throw 'No course data available from iCRESS!';
+          throw 'getCourses: No course data available from iCRESS!';
         }
       } else {
-        throw 'Error connecting to iCRESS😐';
+        throw 'getCourses: Error connecting to iCRESS😐';
       }
     } catch (e) {
       rethrow;

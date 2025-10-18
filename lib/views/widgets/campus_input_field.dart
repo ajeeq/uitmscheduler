@@ -103,13 +103,18 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
                       ),
                       
                       TypeAheadField<String>(
+                        suggestionsCallback: (pattern) {
+                          Iterable<String> items = campuses.map((e) => (e.text));
+                          return items.where((e) => e.toLowerCase().contains(pattern.toLowerCase())).toList();
+                        },
                         builder: (context, controller, focusNode) {
                           return TextField(
-                            controller: this._typeAheadController,
+                            controller: _typeAheadController,
+                            focusNode: focusNode,
                             decoration: InputDecoration(
                               prefixIcon: const Icon(Icons.search),
                               suffixIcon: IconButton(
-                                onPressed: () => this._typeAheadController.clear(),
+                                onPressed: () => _typeAheadController.clear(),
                                 icon: const Icon(Icons.clear),
                               ),
                               border: OutlineInputBorder(
@@ -131,18 +136,20 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
                             ),
                           );
                         },
-                        suggestionsCallback: (pattern) {
-                          Iterable<String> items = campuses.map((e) => (e.text));
-                          return items.where((e) => e.toLowerCase().contains(pattern.toLowerCase())).toList();
-                        },
-                        itemBuilder: (context, suggestion) {
+                        itemBuilder: (context, campus) {
                           return ListTile(
-                            title: Text(suggestion),
+                            title: Text(campus),
                           );
                         },
-                        // transitionBuilder: (context, suggestionsBox, controller) {
-                        //   return suggestionsBox;
-                        // },
+                        transitionBuilder: (context, animation, child) {
+                          return FadeTransition(
+                            opacity: CurvedAnimation(
+                              parent: animation,
+                              curve: Curves.fastOutSlowIn,
+                            ),
+                            child: child,
+                          );
+                        },
                         emptyBuilder: (context) => Container(
                           height: 70,
                           child: const Center(
@@ -153,7 +160,7 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
                           ),
                         ),
                         onSelected: (suggestion) {
-                          this._typeAheadController.text = suggestion;
+                          _typeAheadController.text = suggestion;
                           _selectedCampus = suggestion;
 
                           // updating selected campus name in state(riverpod)
@@ -165,6 +172,7 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
                             borderRadius: BorderRadius.circular(8),
                             elevation: 8.0,
                             color: Theme.of(context).cardColor,
+                            child: child
                           );
                         },
                         autoFlipDirection: true,
