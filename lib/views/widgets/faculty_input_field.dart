@@ -14,6 +14,10 @@ import 'package:uitmscheduler/models/course.dart';
 import 'package:uitmscheduler/providers/campus_providers.dart';
 import 'package:uitmscheduler/providers/course_providers.dart';
 
+// Custom Components
+import 'package:uitmscheduler/shared/components/searchable_input_field.dart';
+import 'package:uitmscheduler/shared/components/title_text.dart';
+
 class FacultyInputField extends ConsumerStatefulWidget {
   const FacultyInputField({
     Key? key,
@@ -72,91 +76,18 @@ class _FacultyInputFieldState extends ConsumerState<FacultyInputField> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  '2. Faculty',
-                  style: TextStyle(
-                    fontFamily: 'avenir',
-                    fontSize: 32,
-                    fontWeight: FontWeight.w900),
-                ),
-                
-                TypeAheadField<String>(
-                  suggestionsCallback: (pattern) {
-                    Iterable<String> items = faculties.map((e) => (e.text));
-                    return items.where((e) => e.toLowerCase().contains(pattern.toLowerCase())).toList();
-                  },
-                  builder: (context, controller, focusNode) {
-                    return TextField(
-                      controller: _typeAheadController,
-                      focusNode: focusNode,
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.search),
-                        suffixIcon: IconButton(
-                          onPressed: () => this._typeAheadController.clear(),
-                          icon: const Icon(Icons.clear),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide:
-                              BorderSide(color: Colors.grey[300]!),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide:
-                              BorderSide(color: Colors.grey[300]!),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide:
-                              BorderSide(color: Colors.grey[300]!),
-                        ),
-                        hintText: 'Search faculty here',
-                      ),
-                    );
-                  },
-                  itemBuilder: (context, faculty) {
-                    return ListTile(
-                      title: Text(faculty),
-                    );
-                  },
-                  transitionBuilder: (context, animation, child) {
-                    return FadeTransition(
-                      opacity: CurvedAnimation(
-                        parent: animation,
-                        curve: Curves.fastOutSlowIn,
-                      ),
-                      child: child,
-                    );
-                  },
-                  emptyBuilder: (context) => Container(
-                    height: 70,
-                    child: Center(
-                      child: Text(
-                        'No faculty found.',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                  ),
-                  onSelected: (String suggestion) {
+                TitleText(title: "2. Faculty"),
+                SearchableInputField(
+                  hintText: 'Search faculty here', 
+                  items: faculties.map((e) => e.text).toList(), 
+                  onSelected: (suggestion) {
                     this._typeAheadController.text = suggestion;
                     _selectedFaculty = suggestion;
 
                     // updating selected faculty name in state(riverpod)
                     facultyController.updateSelectedFacultyName(_selectedFaculty);
                   },
-                  // suggestionsBoxController: suggestionBoxController,
-                  decorationBuilder: (context, child) {
-                    return Material(
-                      borderRadius: BorderRadius.circular(8),
-                      elevation: 8.0,
-                      color: Theme.of(context).cardColor,
-                      child: child
-                    );
-                  },
-                  autoFlipDirection: true,
-                  // autoFlipListDirection: true,
-                  // validator: (value) => value!.isEmpty ? 'Please select a faculty' : null,
-                  // onSaved: (value) => this._selectedSaveFaculty = value,
+                  emptyBuilderText: 'No faculty found',
                 ),
 
                 SizedBox(height: 4),

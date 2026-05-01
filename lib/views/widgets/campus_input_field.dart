@@ -14,6 +14,10 @@ import 'package:uitmscheduler/models/course.dart';
 import 'package:uitmscheduler/providers/campus_providers.dart';
 import 'package:uitmscheduler/providers/course_providers.dart';
 
+// Custom Components
+import 'package:uitmscheduler/shared/components/searchable_input_field.dart';
+import 'package:uitmscheduler/shared/components/title_text.dart';
+
 class CampusInputField extends ConsumerStatefulWidget {
   const CampusInputField({
     Key? key,
@@ -94,71 +98,10 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      const Text(
-                        '1. Campus',
-                        style: TextStyle(
-                          fontFamily: 'avenir',
-                          fontSize: 32,
-                          fontWeight: FontWeight.w900),
-                      ),
-                      
-                      TypeAheadField<String>(
-                        suggestionsCallback: (pattern) {
-                          Iterable<String> items = campuses.map((e) => (e.text));
-                          return items.where((e) => e.toLowerCase().contains(pattern.toLowerCase())).toList();
-                        },
-                        builder: (context, controller, focusNode) {
-                          return TextField(
-                            controller: _typeAheadController,
-                            focusNode: focusNode,
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.search),
-                              suffixIcon: IconButton(
-                                onPressed: () => _typeAheadController.clear(),
-                                icon: const Icon(Icons.clear),
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide:
-                                    BorderSide(color: Colors.grey[300]!),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide:
-                                    BorderSide(color: Colors.grey[300]!),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide:
-                                    BorderSide(color: Colors.grey[300]!),
-                              ),
-                              hintText: 'Search campus here',
-                            ),
-                          );
-                        },
-                        itemBuilder: (context, campus) {
-                          return ListTile(
-                            title: Text(campus),
-                          );
-                        },
-                        transitionBuilder: (context, animation, child) {
-                          return FadeTransition(
-                            opacity: CurvedAnimation(
-                              parent: animation,
-                              curve: Curves.fastOutSlowIn,
-                            ),
-                            child: child,
-                          );
-                        },
-                        emptyBuilder: (context) => Container(
-                          height: 70,
-                          child: const Center(
-                            child: Text(
-                              'No campus found.',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                        ),
+                      TitleText(title: "1. Campus"),
+                      SearchableInputField(
+                        hintText: 'Search campus here', 
+                        items: campuses.map((e) => e.text).toList(), 
                         onSelected: (suggestion) {
                           _typeAheadController.text = suggestion;
                           _selectedCampus = suggestion;
@@ -166,20 +109,8 @@ class _CampusInputFieldState extends ConsumerState<CampusInputField> {
                           // updating selected campus name in state(riverpod)
                           campusController.updateSelectedCampusName(_selectedCampus);
                         },
-                        // suggestionsController: suggestionController,
-                        decorationBuilder: (context, child) {
-                          return Material(
-                            borderRadius: BorderRadius.circular(8),
-                            elevation: 8.0,
-                            color: Theme.of(context).cardColor,
-                            child: child
-                          );
-                        },
-                        autoFlipDirection: true,
-                        // autoFlipListDirection: true,
-                        // validator: (value) => value!.isEmpty ? 'Please select a campus' : null,
-                        // onSaved: (value) => this._selectedSaveCampus = value,
-                      ),
+                        emptyBuilderText: 'No campus found',
+                      )
                     ],
                   ),
                 ),

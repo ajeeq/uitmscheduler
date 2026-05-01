@@ -6,6 +6,10 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 // Providers and Hive
 import 'package:uitmscheduler/providers/group_providers.dart';
 
+// Custom Components
+import 'package:uitmscheduler/shared/components/searchable_input_field.dart';
+import 'package:uitmscheduler/shared/components/title_text.dart';
+
 class GroupInputField extends ConsumerStatefulWidget {
   const GroupInputField({Key? key}) : super(key: key);
 
@@ -46,91 +50,17 @@ class _GroupInputFieldState extends ConsumerState<GroupInputField> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  '4. Group',
-                  style: TextStyle(
-                    fontFamily: 'avenir',
-                    fontSize: 32,
-                    fontWeight: FontWeight.w900),
-                ),
-                
-                TypeAheadField<String>(
-                  suggestionsCallback: (pattern) {
-                    Iterable<String> items = groupListState.map((e) => (e.group));
-                    return items.where((e) => e.toLowerCase().contains(pattern.toLowerCase())).toList();
-                  },
-                  builder: (context, controller, focusNode) {
-                    return TextField(
-                      controller: _typeAheadController,
-                      focusNode: focusNode,
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.search),
-                        suffixIcon: IconButton(
-                          onPressed: () => _typeAheadController.clear(),
-                          icon: const Icon(Icons.clear),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide:
-                              BorderSide(color: Colors.grey[300]!),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide:
-                              BorderSide(color: Colors.grey[300]!),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide:
-                              BorderSide(color: Colors.grey[300]!),
-                        ),
-                        hintText: 'Search group here',
-                      ),
-                    );
-                  },
-                  itemBuilder: (context, group) {
-                    return ListTile(
-                      title: Text(group),
-                    );
-                  },
-                  transitionBuilder: (context, animation, child) {
-                    return FadeTransition(
-                      opacity: CurvedAnimation(
-                        parent: animation,
-                        curve: Curves.fastOutSlowIn,
-                      ),
-                      child: child,
-                    );
-                  },
-                  emptyBuilder: (context) => Container(
-                    height: 70,
-                    child: Center(
-                      child: Text(
-                        'No group found.',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                  ),
-                  onSelected: (String suggestion) {
+                TitleText(title: "4. Group"),
+                SearchableInputField(
+                  hintText: 'Search group here', 
+                  items: groupListState.map((e) => e.group).toList(), 
+                  onSelected: (suggestion) {
                     _typeAheadController.text = suggestion;
 
                     // updating selected group name in state(riverpod)
                     groupNameController.updateSelectedGroupName(suggestion.toString());
-
                   },
-                  // suggestionsBoxController: suggestionBoxController,
-                  decorationBuilder: (context, child) {
-                    return Material(
-                      borderRadius: BorderRadius.circular(8),
-                      elevation: 8.0,
-                      color: Theme.of(context).cardColor,
-                      child: child
-                    );
-                  },
-                  autoFlipDirection: true,
-                  // autoFlipListDirection: true,
-                  // validator: (value) => value!.isEmpty ? 'Please select a group' : null,
-                  // onSaved: (value) => this._selectedSaveGroup = value,
+                  emptyBuilderText: 'No group found',
                 ),
               ],
             ),

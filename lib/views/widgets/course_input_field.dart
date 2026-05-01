@@ -15,6 +15,10 @@ import 'package:uitmscheduler/providers/campus_providers.dart';
 import 'package:uitmscheduler/providers/course_providers.dart';
 import 'package:uitmscheduler/providers/group_providers.dart';
 
+// Custom Components
+import 'package:uitmscheduler/shared/components/searchable_input_field.dart';
+import 'package:uitmscheduler/shared/components/title_text.dart';
+
 class CourseInputField extends ConsumerStatefulWidget {
   const CourseInputField({Key? key}) : super(key: key);
 
@@ -59,72 +63,11 @@ class _CourseInputFieldState extends ConsumerState<CourseInputField> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  '3. Course',
-                  style: TextStyle(
-                    fontFamily: 'avenir',
-                    fontSize: 32,
-                    fontWeight: FontWeight.w900),
-                ),
-                
-                TypeAheadField<String>(
-                  suggestionsCallback: (pattern) {
-                    Iterable<String> items = courseListState.map((e) => (e.course));
-                    return items.where((e) => e.toLowerCase().contains(pattern.toLowerCase())).toList();
-                  },
-                  builder: (context, controller, focusNode) {
-                    return TextField(
-                      controller: _typeAheadController,
-                      focusNode: focusNode,
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.search),
-                        suffixIcon: IconButton(
-                          onPressed: () => _typeAheadController.clear(),
-                          icon: const Icon(Icons.clear),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide:
-                              BorderSide(color: Colors.grey[300]!),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide:
-                              BorderSide(color: Colors.grey[300]!),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide:
-                              BorderSide(color: Colors.grey[300]!),
-                        ),
-                        hintText: 'Search course here',
-                      ),
-                    );
-                  },
-                  itemBuilder: (context, course) {
-                    return ListTile(
-                      title: Text(course),
-                    );
-                  },
-                  transitionBuilder: (context, animation, child) {
-                    return FadeTransition(
-                      opacity: CurvedAnimation(
-                        parent: animation,
-                        curve: Curves.fastOutSlowIn,
-                      ),
-                      child: child,
-                    );
-                  },
-                  emptyBuilder: (context) => Container(
-                    height: 70,
-                    child: Center(
-                      child: Text(
-                        'No course found.',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                  ),
-                  onSelected: (String suggestion) {
+                TitleText(title: "3. Course"),
+                SearchableInputField(
+                  hintText: 'Search course here', 
+                  items: courseListState.map((e) => e.course).toList(),
+                  onSelected: (suggestion) {
                     _typeAheadController.text = suggestion;
                     var url = '';
 
@@ -138,21 +81,8 @@ class _CourseInputFieldState extends ConsumerState<CourseInputField> {
                     // updating selected course name and course url in state(riverpod)
                     courseNameController.updateSelectedCourseName(suggestion.toString());
                     courseUrlController.updateCourseUrl(url);
-
                   },
-                  // suggestionsController: suggestionController,
-                  decorationBuilder: (context, child) {
-                    return Material(
-                      borderRadius: BorderRadius.circular(8),
-                      elevation: 8.0,
-                      color: Theme.of(context).cardColor,
-                      child: child,
-                    );
-                  },
-                  autoFlipDirection: true,
-                  // autoFlipListDirection: true,
-                  // validator: (value) => value!.isEmpty ? 'Please select a campus' : null,
-                  // onSaved: (value) => this._selectedSaveCourse = value,
+                  emptyBuilderText: 'No course found',
                 ),
               ],
             ),
