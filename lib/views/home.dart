@@ -149,7 +149,7 @@ class _HomeState extends ConsumerState<Home>{
               decoration: BoxDecoration(
                 color: AppColor.lightPrimary,
               ),
-              child: Text('UiTM Scheduler 0.8.1'),
+              child: Text('UiTM Scheduler 0.8.2'),
             ),
             ListTile(
               leading: const Icon(

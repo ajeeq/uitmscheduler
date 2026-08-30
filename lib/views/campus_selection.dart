@@ -1,6 +1,7 @@
 // Import directives
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 // Services
 import 'package:uitmscheduler/api/services.dart';
@@ -11,8 +12,12 @@ import '../constants/colors.dart';
 // Models
 import 'package:uitmscheduler/models/campus_faculty.dart';
 
-// Widgets
-import 'package:uitmscheduler/views/widgets/campus_input_field.dart';
+// Providers and Hive
+import 'package:uitmscheduler/providers/campus_providers.dart';
+
+// Custom Components
+import 'package:uitmscheduler/shared/components/searchable_input_field.dart';
+import 'package:uitmscheduler/shared/components/title_text.dart';
 
 class CampusSelection extends ConsumerStatefulWidget {
   const CampusSelection({Key? key}) : super(key: key);
@@ -22,7 +27,33 @@ class CampusSelection extends ConsumerStatefulWidget {
 }
 
 class _CampusSelectionState extends ConsumerState<CampusSelection> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _typeAheadController = TextEditingController();
+  SuggestionsController suggestionController = SuggestionsController();
+
+  bool _isLoading = false;
+  late String _selectedCampus;
   String _errorMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future<void>.delayed(Duration.zero, () {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Data loaded from iCRESS successfully!"),
+          duration: Duration(seconds: 5),
+        ),
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _typeAheadController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +68,53 @@ class _CampusSelectionState extends ConsumerState<CampusSelection> {
         backgroundColor: AppColor.lightPrimary,
       ),
       body: Container(
-        child: CampusInputField(campuses: campuses),
+        child: _isLoading 
+        ? Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                CircularProgressIndicator()
+              ],
+              ),
+            )
+        : SingleChildScrollView(
+            reverse: true,
+            physics: const ClampingScrollPhysics(),
+            child: GestureDetector(
+              // close the suggestions box when the user taps outside of it
+              onTap: () {
+                suggestionController.close();
+              },
+              child: Column(
+                children: [
+                  Form(
+                    key: this._formKey,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          TitleText(title: "1. Campus"),
+                          SearchableInputField(
+                            hintText: 'Search campus here', 
+                            items: campuses.map((e) => e.text).toList(), 
+                            onSelected: (suggestion) {
+                              _typeAheadController.text = suggestion;
+                              _selectedCampus = suggestion;
+                              
+                              // updating selected campus name in state(riverpod)
+                              ref.read(campusNameProvider.notifier).updateSelectedCampusName(_selectedCampus);
+                            },
+                            emptyBuilderText: 'No campus found',
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
       ),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: AppColor.lightPrimary,
