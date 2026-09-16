@@ -8,6 +8,11 @@ allprojects {
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
+    if (project.name == 'flutter_keyboard_visibility') {
+        project.afterEvaluate {
+            project.android.compileSdkVersion 36
+        }
+    }
     project.evaluationDependsOn(':app')
 }
 
