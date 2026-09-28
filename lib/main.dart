@@ -1,6 +1,7 @@
 // Import directives
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
@@ -8,6 +9,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 // Models
 import 'package:uitmscheduler/models/selected.dart';
+import 'package:uitmscheduler/services/http_overrides.dart';
 
 // Screens
 import 'package:uitmscheduler/views/home.dart';
@@ -23,6 +25,13 @@ Future main() async {
   Hive.registerAdapter<Selected>(SelectedAdapter());
   await Hive.openBox<Selected>("selectedCourse");
   
+  if (kDebugMode) {
+    // This code only runs in development / debug mode
+    print("Running in development environment");
+    // HttpOverrides.global = MyHttpOverrides();
+    // Call the helper to bypass self-signed certificates
+    DevHttpOverrides.init(); 
+  }
   runApp(
     const ProviderScope(
       child: MyApp(),

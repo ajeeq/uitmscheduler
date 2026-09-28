@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-
 class SearchableInputField extends StatefulWidget {
   final String hintText;
   final List<String> items;
@@ -10,12 +9,12 @@ class SearchableInputField extends StatefulWidget {
   final String emptyBuilderText;
 
   const SearchableInputField({
-    // super.key,
+    Key? key,
     required this.hintText,
     required this.items,
     required this.onSelected,
     required this.emptyBuilderText,
-  });
+  }) : super(key: key);
 
   @override
   State<SearchableInputField> createState() => _SearchableInputFieldState();
@@ -45,14 +44,12 @@ class _SearchableInputFieldState extends State<SearchableInputField> {
     return GestureDetector(
       onTap: () => suggestionController.close(),
       child: Padding(
-        padding: const EdgeInsets.all(0), 
+        padding: const EdgeInsets.all(0),
         child: TypeAheadField<String>(
           controller: _controller,
           suggestionsCallback: (search) {
             return widget.items
-              .where((e) =>
-                e.toLowerCase().contains(search.toLowerCase()))
-              .toList();
+              .where((e) => e.toLowerCase().contains(search.toLowerCase())).toList();
           },
           builder: (context, controller, focusNode) {
             return TextField(
@@ -95,15 +92,15 @@ class _SearchableInputFieldState extends State<SearchableInputField> {
             });
             widget.onSelected(value);
           },
-          emptyBuilder: (context) => Container(
-             height: 70,
-             child: Center(
-               child: Text(
-                 widget.emptyBuilderText,
-                 style: TextStyle(fontSize: 20),
-               ),
-             ),
-           ),
+          emptyBuilder: (context) => SizedBox(
+            height: 70,
+            child: Center(
+              child: Text(
+                widget.emptyBuilderText,
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          ),
         ),
       ),
     );
